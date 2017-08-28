@@ -1,0 +1,4 @@
+dependencies {
+  compile group: 'antlr', name: 'antlr', version: '2.7.7'
+  testCompile project(':')
+}

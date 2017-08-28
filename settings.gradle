@@ -1,0 +1,3 @@
+include "axdr-compiler"
+
+project(":axdr-compiler").projectDir = file("asn1/axdr-compiler")

@@ -1,0 +1,229 @@
+v1.4.1 26-Jul-2017
+------------------
+- update bouncycastle bcprov-jdk15on to 1.57
+- fix DataObject#Type isNumber bug
+
+v1.4.0 27-Jun-2017
+------------------
+
+- fix iec-21 layer bug introduced in 1.3.0
+
+- support UDP client connections
+
+- reverted latest changes of RawMessageData#toString()
+
+- ConnectionBuilder: 
+	- add setHdlcMaxInformationLength, used to negotiate with the client
+	- removed obsolete methods setManufacturerId and setDeviceId
+
+- TcpConnectionBuilder: 
+	- add method setTransportProtocol
+	- rename setTcpPort to setPort
+	
+- improvements of client message handling
+
+- extend server console application
+
+
+v1.3.0 23-May-2017
+------------------
+
+- added support for fragmentation at HDLC layer
+
+- added HDLC support for server (client already supported HDLC)
+
+- added SN capabilities to server (client already supported SN)
+
+- added rawmessagelistener to hdlc client layer
+
+- minor fix in CosemDateTime
+
+- update jRxTx dependency to version to 1.0.0
+
+- update bouncycastle bcprov-jdk15on dependency to 1.54
+
+- update jASN1 dependency to 1.8.0
+
+
+v1.2.6 14-Mar-2017
+------------------
+
+- fixed regression bug from version 1.2.5 in decoding inital
+  connection request (AARQ)
+
+v1.2.5 09-Mar-2017
+------------------
+
+- fixed parameter checking in AxdrBitString constructor
+
+- library now depends on jASN1 1.7.1
+
+
+v1.2.4 31-Jan-2017
+------------------
+
+- added interface classes for "image transfer" and "diconnect control"
+
+- ServerBuilder is now public again so that external lower layers can
+  be implemented as plug-ins
+
+
+v1.2.3 22-Dec-2016
+------------------
+
+- fix wrapper thread termination in DLMS/COSEM server
+
+v1.2.2 20-Dec-2016
+------------------
+
+- fix timeout sn issue
+
+- fix datetime deviation bug
+
+v1.2.1 28-Oct-2016
+------------------
+
+- fixed graceful client and server disconnect by sending and receiving
+  correct disconnect request and response messages
+
+- added support for compact array
+
+- When using SN connections it is no longer required to retrieve the
+  complete LN to SN address map from the meter. Instead this map can
+  be set manually in the ConnectionBuilder.
+
+- updated jASN1 dependency from version 1.5 to 1.6
+
+
+v1.2.0 23-Sep-2016
+------------------
+
+- added raw data listener to access the bytes transmitted between
+  client and server
+
+- fixed bug in ObisCode class
+
+- fixed settings file so recompiling lib works
+
+v1.1.1 27-Jul-2016
+------------------
+
+- server: changed thread pool. fixes thread leak.
+
+- fixed thread locking error in server
+
+
+v1.1.0 19-Jul-2016
+------------------
+- added interceptors for server implementation:
+    * invokation interceptor intercepts access to COSEM objects
+    * server listener to listen on connections opened and closed
+- implemented server system classes (change the keys in a server is now possible):
+	* Security Setup
+	* logical device name
+- renamed Authentciation to SecuritySuite + add a builder instead of
+  static instantiation.
+- changes in Connectionbuilder
+	* add setReferencingMethod method
+	* replace buildLn-/buildSnConnection() functions with single buildConnection() function
+- update COSEM asn1
+	* AccessResultCode
+	* Add utf8-string to Data
+- Console APP: 
+	* added option to print logical device assignment list (SAP assignment list) 
+- fix deviation value in toClaendar of CosemDateTime
+- fix typo in CosemAttribute
+- set getters to public in SelectiveAccessDescription
+- force getters and setters of a CosemAttribute to have the get/set prefix
+- serverbuilder: start server on build
+
+v1.0.1 13-Jun-2016
+------------------
+- fix error in TcpConnectionBuilder for HDLC connections
+- fix error connecting to server without restrictions
+- server: block unencrypted messages when encryption required
+- made sample sever and sample client compatible
+
+v1.0.0 27-May-2016
+------------------
+- added server capabilities to jDLMS (annotation based API)
+- added HLDC over TCP/IP support
+- replaced RXTX with the OpenMUC fork jRxTx 
+	* https://github.com/openmuc/jrxtx 
+	* https://repo.maven.apache.org/maven2/org/openmuc/jrxtx/
+- renamed ClientConnection to DlmsConnection
+- replaced vargs parameters of get/set/action with java.util.List
+- add single argument get/set/action, with single response in
+  DlmsConnection
+- fixed + reorganized HLDC layer
+- moved authentication/encryption arguments from ConnectionBuilder to
+  Authentication class
+- made ConnectionBuilder public, so users can create their own
+  physical layer in future releases
+- fixes in system title
+- implement graceful disconnect function
+- updated console APP: new arguments
+- add gradle wrapper to the project root
+
+v0.11.4 24-Feb-2016
+-------------------
+- added support for changing authentication and encryption keys inside
+  the meter and in meters connected to the electricity meter via
+  M-Bus.
+- fixed short name referencing
+- made ClientConnection public, it should be used instead of
+  LnConnection and SnConnection
+- fixed encryption of messages larger than 128 bytes in size
+- fixed bug in decoding the HDLC address
+- minor fixes in console apps
+
+v0.11.3 22-Dec-2015
+-------------------
+- updated jASN1 dependency to version 1.5
+
+v0.11.2 21-Dec-2015
+-------------------
+- Fixed bug in TcpConnectionBuilder returning itself. (thanks to cgi)
+
+v0.11.1 18-Dec-2015
+-------------------
+- the calling AP title field is now only included in association
+  request if HLS > 1 is used. Otherwise this field would cause
+  problems with a meter from Iskraemeco.
+- fixed bug in console app when printing access mode of methods
+
+
+v0.11.0 16-Dec-2015
+-------------------
+- fixed default client access point and logical device address
+- addressing API improved
+- improved console application:
+  - added support for HDLC
+  - scanned class IDs and attribute IDs are printed in human readable
+    form
+- improved A-XDR compiler
+
+
+v0.10.0 9-Nov-2015
+------------------
+- changed license from LGPL to GPLv3, dual licensing possible
+- api, client and sample projects were merged to a single
+  project/library called jdlms
+- api was completely revised
+- 62056-21 mode change exchange completely refactored
+- Added support for High Level Security (HLS) 5 that uses GMAC
+- fixed bug in AxdrInteger, resulting in wrong decoding of lager
+  unsigned values. thanks to Justin Forder from cgi
+- changed unnumbered information decoding in hdlc thanks to Niels
+  Kowala
+- BER decoding is now done by jASN1 library, jdlms therefor depends on jasn1
+- fixed bug decoding hdlc address (thanks to Michal Kowalski from
+  Atrem)
+- fixed bug when converting ObjectID to string (thanks to Michal
+  Kowalski from Atrem)
+- removed support for UDP
+
+
+v0.9.0 26-Jul-2013
+------------------
+- first release

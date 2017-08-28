@@ -1,0 +1,177 @@
+
+project.ext {
+
+  cfgVersion = "1.4.1"
+  
+  cfgGroup = "org.openmuc"
+
+  cfgCopyDependencies = true
+
+  cfgCopyToRoot = false
+
+  cfgSignPom = true
+
+  cfgRepository = project.properties.sonatypeRepository
+
+  cfgSnapshotRepository = project.properties.sonatypeSnapshotRepository
+
+  cfgRepositoryUser = project.properties.sonatypeUser
+
+  cfgRepositoryPass = project.properties.sonatypePass
+
+  javaProjects = allprojects
+
+  distributionProjects = javaProjects.findAll {
+    it.getPath() == ":" ||
+    it.getPath() == ":axdr-compiler"
+  }
+
+  docProjects = distributionProjects.findAll {
+    it.getPath() == ":"
+  }
+
+  repositoryProjects = distributionProjects.findAll {
+    it.getPath() == ":"
+  }
+}
+
+tasks.withType(Tar) {
+
+  into(project.name) {
+    from("./") {
+      include "build.gradle"
+      include "configuration.gradle"
+      include "license/**"
+      include "doc/CHANGELOG.txt"
+      include "run-scripts/**"
+      include "gradle/wrapper/**"
+      include "gradlew"
+      include "gradlew.bat"
+      include "build/libs-all/**"
+      include "dependencies/**"
+      include "src/**"
+      
+      include "asn1/cosem/**"
+      include "asn1/iso-acse-layer/**"
+
+      include "asn1/axdr-compiler/build.gradle"
+      include "asn1/axdr-compiler/src/**"
+      include "asn1/axdr-compiler/antlr/**"
+      include "asn1/axdr-compiler/dependencies/**"
+      include "asn1/axdr-compiler/license/**"
+      include "asn1/axdr-compiler/build/libs-all/*.jar"
+      include "asn1/axdr-compiler/run-scripts/**"
+    }
+
+    if (name.equals("tar") ){
+      exclude "**/dependencies/**/src"
+    }
+
+    from("./build/") {
+      include "settings.gradle"
+    }
+  }
+
+  into(project.name + "/doc/user-guide/") {
+    from("./build/asciidoc/html5/") {
+      include "**"
+    }
+    from("./build/asciidoc/pdf/") {
+      include "*.pdf"
+    }
+  }
+
+  into(project.name + "/doc/") {
+    from("./build/docs/") {
+      include "javadoc/**"
+    }
+  }
+
+
+}
+
+
+//------------------project specific configurations--------------------
+
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "osgi"
+apply plugin: "maven"
+apply plugin: "signing"
+
+
+sourceSets {
+  main {
+    java.srcDirs = ["src/main/java", "src/main/java-gen", "src/main/java-server"]
+  }
+  test {
+  	java.srcDirs = ["src/test/java", "src/test/java-server"]
+  }
+  itest {
+    java {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir file("src/itest/java")
+    }
+    resources.srcDir file("src/itest/resources")
+  }
+}
+
+configurations {
+    itestCompile.extendsFrom testCompile
+    itestRuntime.extendsFrom testRuntime
+}
+
+task itest(type: Test) {
+    testClassesDirs = sourceSets.itest.output.classesDirs
+    classpath = sourceSets.itest.runtimeClasspath
+}
+
+check.dependsOn itest
+itest.mustRunAfter test
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+dependencies {
+  compile group: "org.openmuc", name: "jasn1", version: "1.8.0"
+
+  compile group: "org.openmuc", name: "jrxtx", version: "1.0.0"
+
+  compile group: "org.bouncycastle", name: "bcprov-jdk15on", version: "1.57"
+
+  testCompile group: "org.powermock",  name: "powermock-api-mockito",   version: "1.6.6"
+  testCompile group: "org.powermock",  name: "powermock-module-junit4", version: "1.6.5"
+  testCompile group: "pl.pragmatists", name: "JUnitParams",             version: "1.0.5"
+}
+
+
+
+jar {
+  manifest {
+    name = "jDLMS"
+    instruction "Export-Package", "!*.internal.*,*"
+    instruction 'Import-Package', 'org.openmuc.jasn1.*, javax.net,org.bouncycastle.crypto,*;resolution:=optional'
+  }
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      pom.project {
+        name "jDLMS"
+        description "jDLMS is a library implementing the DLMS/COSEM communication standard (client)."
+        
+        licenses {
+          license {
+            name "GNU General Public License"
+            url "http://www.gnu.org/copyleft/gpl-3.0.html"
+            distribution "repo"
+          }
+        }
+        
+      }
+    }
+  }
+}

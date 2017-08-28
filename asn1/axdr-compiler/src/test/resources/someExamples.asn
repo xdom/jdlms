@@ -1,0 +1,40 @@
+SOME_EXAMPLE DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+SequenceOfAll ::= SEQUENCE {
+
+	myInteger [30] INTEGER,
+	myInteger2 [31] IMPLICIT INTEGER(100..200),
+	myBoolean BOOLEAN,
+	bitString BIT STRING,
+	enumerated ENUMERATED {test1(1), test2(2)},
+	generalizedTime GeneralizedTime,
+	myNull NULL,
+	octetString OCTET STRING,
+
+	--all the strings
+	visibleString VisibleString,
+
+	--complex values
+	my-sequence SEQUENCE OF My-Sequence,
+	my-choice My-Choice
+}
+
+My-Sequence ::= SEQUENCE {
+	implVisibleString [0] IMPLICIT ImplVisibleString
+}
+
+My-Choice ::= CHOICE {
+	my-choice2 [1] My-Choice2,
+	myboolean  [2] BOOLEAN
+}
+
+My-Choice2 ::= CHOICE {
+	myint     [1]  INTEGER,
+	myboolean [24] BOOLEAN
+}
+
+
+ImplVisibleString ::= VisibleString
+
+END

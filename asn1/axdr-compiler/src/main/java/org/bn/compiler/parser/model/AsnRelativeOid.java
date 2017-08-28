@@ -1,0 +1,23 @@
+package org.bn.compiler.parser.model;
+
+public class AsnRelativeOid {
+    final String BUILTINTYPE = "RELATIVE-OID";
+    public String name;
+
+    // ~--- constructors -------------------------------------------------------
+
+    // Default Constructor
+    public AsnRelativeOid() {
+    }
+
+    // ~--- methods ------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        String ts = "";
+
+        ts += BUILTINTYPE;
+
+        return ts;
+    }
+}

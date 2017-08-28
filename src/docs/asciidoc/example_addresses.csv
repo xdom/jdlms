@@ -1,0 +1,4 @@
+Class ID,Logical Name, Attribute ID,Description
++SAP_ASSIGNMENT(17)+,+0.0.41.0.0.255+,+SAP_assignment_list(2)+,"Contains the list of all logical devices and their SAP addresses within
+the physical device."
++ASSOCIATION_LN(15)+,+0.0.40.0.0.255+,+object_list(2)+,Contains the list of visible COSEM objects.

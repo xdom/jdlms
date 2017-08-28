@@ -1,0 +1,13 @@
+org.openmuc.jdlms
+org.openmuc.jdlms.datatypes
+org.openmuc.jdlms.interfaceclass
+org.openmuc.jdlms.interfaceclass.attribute
+org.openmuc.jdlms.interfaceclass.method
+org.openmuc.jdlms.sessionlayer.client
+org.openmuc.jdlms.sessionlayer.hdlc
+org.openmuc.jdlms.sessionlayer.server
+org.openmuc.jdlms.settings.client
+org.openmuc.jdlms.settings.server
+org.openmuc.jdlms.transportlayer
+org.openmuc.jdlms.transportlayer.client
+org.openmuc.jdlms.transportlayer.server

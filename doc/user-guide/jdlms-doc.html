@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.4">
+<title>jDLMS User Guide</title>
+<style>
+/*
+ * AsciiDoc 'volnitsky' theme for xhtml11 and html5 backends.
+ * Based on css from http://volnitsky.com, which was in turn based on default
+ * theme from AsciiDoc
+ *
+ * FIXME: The styling is still a bit rough in places.
+ *
+ */
+
+/* Default font. */
+body {
+  font-family: Helvetica, sans-serif;
+  max-width:62.5em;
+  margin: auto;
+}
+
+/* Title font. */
+
+h1, h2, h3, h4, h5, h6 {
+    clear: both;
+    font-family: Helvetica, serif;
+    line-height: 1.3;
+}
+
+a {
+    border-bottom: 1px dotted #999999;
+    color: #378f03 !important;
+    text-decoration: none !important;
+}
+a:hover {
+    border-bottom: 1px solid #378f03;
+    color: #378f03 !important;
+    text-decoration: none !important;
+}
+
+em {
+  font-style: italic;
+  color: #4E4E4E;
+}
+
+strong {
+  font-weight: bold;
+  color: #000000;
+}
+
+
+div.sectionbody {
+/*  margin-left: 0;*/
+}
+
+hr {
+  border: 1px solid #575757;
+}
+
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+#author {
+  color: #575757;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+#footer {
+  font-size: small;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #575757;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock {
+  padding-left: 2.0em;
+  margin-right: 10%;
+}
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock {
+  padding-left: 2.0em;
+  margin-right: 10%;
+}
+div.verseblock > pre.content {
+  font-family: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #575757;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: #575757;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+div.tableblock > table {
+  border: 3px solid #575757;
+}
+thead {
+  font-weight: bold;
+  color: #575757;
+}
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: #575757;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toctitle {
+  color: #575757;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 { margin-top: 0; margin-bottom: 0; }
+div.toclevel1 { margin-top: 0.3em; margin-left: 0; font-size: 1.0em; }
+div.toclevel2 { margin-top: 0.25em; margin-left: 2em; font-size: 0.9em; }
+div.toclevel3 { margin-left: 4em; font-size: 0.8em; }
+div.toclevel4 { margin-left: 6em; font-size: 0.8em; }
+
+
+
+.monospaced, tt, div.listingblock > div.content {
+  font-family:  Consolas, "Andale Mono", "Courier New", monospace;
+  color: #004400;
+  background: #f4f4f4;
+  max-width: 80em;
+  line-height: 1.2em;
+}
+
+.paragraph p  {
+  line-height: 1.5em;
+  margin-top: 1em;
+}
+
+/*.paragraph p, li, dd, .content { max-width: 85em; }
+.admonitionblock               { max-width: 35em; }*/
+
+div.sectionbody div.ulist > ul > li {
+  list-style-type: square;
+  color: #aaa;
+}
+  div.sectionbody div.ulist >  ul > li > * {
+    color: black;
+    /*font-size: 50%;*/
+  }
+
+
+div.sectionbody div.ulist > ul > li div.ulist > ul > li {
+  color: #ccd ;
+}
+  div.sectionbody div.ulist > ul > li div.ulist > ul > li > * {
+    color: black ;
+  }
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #575757;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #575757;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #575757;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>jDLMS User Guide</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_intro">1. Intro</a>
+<ul class="sectlevel2">
+<li><a href="#_distribution">1.1. Distribution</a></li>
+</ul>
+</li>
+<li><a href="#_using_jdlms">2. Using jDLMS</a></li>
+<li><a href="#_modifying_and_compiling_jdlms">3. Modifying and Compiling jDLMS</a>
+<ul class="sectlevel2">
+<li><a href="#_a_xdr_compiler">3.1. A-XDR Compiler</a></li>
+</ul>
+</li>
+<li><a href="#_dlms_cosem_concepts">4. DLMS/COSEM Concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_physical_and_logical_devices">4.1. Physical and Logical Devices</a></li>
+<li><a href="#_server_address">4.2. Server Address</a></li>
+<li><a href="#_client_id">4.3. Client ID</a></li>
+<li><a href="#_addressing_attributes_and_methods">4.4. Addressing Attributes and Methods</a></li>
+<li><a href="#_dlms_services">4.5. DLMS Services</a></li>
+<li><a href="#_security">4.6. Security</a></li>
+</ul>
+</li>
+<li><a href="#_terminology">5. Terminology</a></li>
+<li><a href="#_authors">6. Authors</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_intro">1. Intro</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>jDLMS is a Java implementation of the DLMS/COSEM protocol. It can be
+used to develop individual DLMS/COSEM client/master and server/slave
+applications.</p>
+</div>
+<div class="paragraph">
+<p>The jDLMS library supports communication over HDLC/serial, HDLC/TCP
+and Wrapper/TCP.</p>
+</div>
+<div class="sect2">
+<h3 id="_distribution">1.1. Distribution</h3>
+<div class="paragraph">
+<p>After extracting the distribution tar file the jDLMS library can be
+found in the directory <em>build/libs-all</em>. For license information
+check the <em>license</em> directory in the distribution.</p>
+</div>
+<div class="sect3">
+<h4 id="_dependencies">1.1.1. Dependencies</h4>
+<div class="paragraph">
+<p>Besides the jDLMS library the folder <em>build/libs-all/</em> contains the
+following external libraries:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">jASN1</dt>
+<dd>
+<p>A library for ASN.1 BER encoding/decoding, LGPLv2.1 or later,
+<a href="https://www.openmuc.org/asn1/" class="bare">https://www.openmuc.org/asn1/</a></p>
+</dd>
+<dt class="hdlist1">jRxTx</dt>
+<dd>
+<p>This library for serial communication is only needed by
+jDLMS if communication over HDLC/serial is used. jRxTx is a fork of
+RxTx and is hosted at <a href="https://github.com/openmuc/jrxtx" class="bare">https://github.com/openmuc/jrxtx</a>. The library
+is licensed under the LGPL(v2.1 or later) + linking exception.</p>
+<div class="paragraph">
+<p>jRxTx consists of a Java part located in the <em>dependencies</em> folder
+of the distribution and a native part that is equivalent to that of
+RxTx. Note that you have to install the native part of RxTx as
+explained in our
+<a href="https://www.openmuc.org/faq/how-do-i-get-serial-communication-to-work-with-rxtx/">FAQ</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">Bouncy Castle (bcprov)</dt>
+<dd>
+<p>A library needed for security algorithms. It is only needed if
+jDLMS is used with encryption or high level authentication enabled.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The <em>dependencies</em> folder in the distribution contains more detailed
+license and copyright information about these dependencies.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_command_line_application">1.1.2. Command Line Application</h4>
+<div class="paragraph">
+<p>A command line application is part of the library that can be used to
+connect, read, write and scan DLMS devices. You can execute it using
+the <em>jdlms-console-client</em> script found in the folder <em>run-scripts</em>.
+Executing the script without any parameters will print help
+information to the screen.</p>
+</div>
+<div class="paragraph">
+<p>Instead of running the application from the terminal you can create
+Eclipse project files as explained in our
+<a href="https://www.openmuc.org/faq/gradle_getting_started/">FAQs</a> and run
+it from within Eclipse.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_jdlms">2. Using jDLMS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the jDLMS <a href="https://www.openmuc.org/projects/jdlms/javadoc/">Javadoc</a> for
+documentation of the API. You may want to take a look at the source code of the
+ConsoleClient or the ConsoleServer which is part of the distribution.</p>
+</div>
+<div class="paragraph">
+<p>The following is a brief sample client that connects to a server and
+reads (using the GET service) the list of COSEM objects available in the
+logical device.</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample connection from sample source folder.</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">InetAddress</span> inetAddress = <span class="predefined-type">InetAddress</span>.getByName(<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>);
+SecuritySuite securitySuite = SecuritySuite.builder()
+        .setPassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">Password</span><span class="delimiter">&quot;</span></span>.getBytes(StandardCharsets.US_ASCII))
+        .setAuthenticationMechanism(AuthenticationMechanism.LOW)
+        .setEncryptionMechanism(EncryptionMechanism.NONE)
+        .build();
+
+TcpConnectionBuilder connectionBuilder = <span class="keyword">new</span> TcpConnectionBuilder(inetAddress).setPort(<span class="integer">6789</span>)
+        .setSecuritySuite(securitySuite)
+        .setRawMessageListener(<span class="keyword">new</span> RawMessageListener() {
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> messageCaptured(RawMessageData rawMessageData) {
+                <span class="comment">// TODO: log data</span>
+                <span class="comment">// logger.debug(.. rawMessageData.getMessageSource() ..</span>
+            }
+        });
+
+<span class="keyword">try</span> (DlmsConnection dlmsConnection = connectionBuilder.build()) {
+
+    GetResult result = dlmsConnection
+            .get(<span class="keyword">new</span> AttributeAddress(AssociationLnAttribute.OBJECT_LIST, <span class="string"><span class="delimiter">&quot;</span><span class="content">0.0.40.0.0.255</span><span class="delimiter">&quot;</span></span>));
+
+    <span class="keyword">if</span> (result.getResultCode() == AccessResultCode.SUCCESS) {
+        DataObject resultData = result.getResultData();
+        <span class="predefined-type">System</span>.out.println(resultData.toString());
+    }
+} <span class="comment">// closes the connection automatically at the end of this block</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modifying_and_compiling_jdlms">3. Modifying and Compiling jDLMS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We use the Gradle build automation tool. The distribution contains a
+fully functional gradle build file (<em>build.gradle</em>). Thus if you
+changed code and want to rebuild a library you can do it easily with
+Gradle. Also if you want to import our software into Eclipse you can
+easily create Eclipse project files using Gradle. Just follow the
+instructions on our
+<a href="https://www.openmuc.org/faq/gradle_getting_started/">FAQ site</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_a_xdr_compiler">3.1. A-XDR Compiler</h3>
+<div class="paragraph">
+<p>The jDLMS distribution contains a subproject named <em>A-XDR Compiler</em>. It
+is an application developed to automatically compile the DLMS/COSEM
+ASN.1 data structures and generate classes that can be used to
+encode/decode A-XDR messages. The generated classes are part of
+jDLMS. You will <em>not</em> need this application if you simply want to use
+the jDLMS library.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dlms_cosem_concepts">4. DLMS/COSEM Concepts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>DLMS/COSEM is an application layer protocol specifically designed for
+communication with smart meters. The DLMS/COSEM standard is adopted by
+the IEC TC13 WG 14 into the IEC 62056 standard series.</p>
+</div>
+<div class="paragraph">
+<p>DLMS/COSEM supports multiple lower layer protocols. Communication over
+TCP, UDP, RS-232, RS-485 and multiple power line protocols such as G3
+is supported. Many meters offer an optical interface at the front of
+the meter. One can communicate over this interface using optical
+probes that convert the signal to RS-232 and back again.</p>
+</div>
+<div class="paragraph">
+<p>In DLMS/COSEM the meter is called the <em>server</em> (when used over IP) or
+<em>slave</em> (when accessed over HDLC/serial). The entity accessing the
+meter is called the client or master respectively. In this manual we
+will always use the terms client and server.</p>
+</div>
+<div class="paragraph">
+<p>In most cases DLMS/COSEM communication uses either <em>HDLC</em> or a special
+<em>Wrapper Layer</em> to add addressing information to the DLMS application
+layer PDUs.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/jdlms-transport.png"><img src="images/jdlms-transport.png" alt="jdlms transport" width="80%"></a>
+</div>
+<div class="title">Figure 1. DLMS/COSEM communication layers</div>
+</div>
+<div class="sect2">
+<h3 id="_physical_and_logical_devices">4.1. Physical and Logical Devices</h3>
+<div class="paragraph">
+<p>In DLMS/COSEM, a physical smart meter device can host several so
+called logical devices. Each logical device has an address in the
+range [0, 16383]. As an example, a meter could consist of one
+logical device for electricity metering at address 18 and another one
+for a connected gas meter at address 67. No matter what type of smart
+meter it is, a DLMS/COSEM device must contain a special logical device
+called the <em>management logical device</em> at address 1. The content of
+this device may vary, but it must at least have a list of all
+logical devices inside the physical smart meter. You are always
+connecting to a single logical device with DLMS/COSEM.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/physical-device.png"><img src="images/physical-device.png" alt="physical device" width="80%"></a>
+</div>
+<div class="title">Figure 2. COSEM physical device</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_server_address">4.2. Server Address</h3>
+<div class="paragraph">
+<p>The server address consists of the physical address and the address of
+the logical device. Over TCP/IP the physical address is equal to the
+IP address and port. Over serial the physical address (also referred
+to as the lower HDLC address) ranges from 0 to 16383. It can
+either be left empty (over RS-232) or not (RS-485).</p>
+</div>
+<div class="paragraph">
+<p>The logical device address is sometimes called <em>server wPort</em> or
+<em>server SAP</em>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_id">4.3. Client ID</h3>
+<div class="paragraph">
+<p>The client ID (also called <em>client SAP</em> or <em>client wPort</em>) defines the
+access level with which the client connects to the logical device.
+The client ID 16 is a special client ID, which refers to the <em>public
+client</em> for which no authentication or encryption is required.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_addressing_attributes_and_methods">4.4. Addressing Attributes and Methods</h3>
+<div class="paragraph">
+<p>DLMS/COSEM groups the data of a logical device into objects. These objects are
+always instances of <em>interface classes</em> (IC) that are defined in IEC
+62056-6-2.</p>
+</div>
+<div class="paragraph">
+<p>Each COSEM object can contain several attributes and
+methods. These are identified using attribute ID and method ID
+respectively.</p>
+</div>
+<div class="paragraph">
+<p>Attributes and methods can be addressed in two ways: using <em>logical
+name referencing</em> and <em>short name referencing</em>. The referencing method
+needs is negotiated during connection build up. Logical name
+referencing is recommend and is more commonly used.</p>
+</div>
+<div class="sect3">
+<h4 id="_logical_name_referencing">4.4.1. Logical Name Referencing</h4>
+<div class="paragraph">
+<p>A logical name is actually an OBIS code. It sometimes also called
+<em>instance ID</em>. It is a 6 byte number that uniquely identifies an
+object in a logical device. For example, the clock of a smart meter is
+always reachable under the address <em>[0, 0, 1, 0, 0, 255]</em>.</p>
+</div>
+<div class="paragraph">
+<p>The meaning of an OBIS code is defined in IEC 62056-6-1. A list of all
+possible logical names is published by the DLMS UA in an MS
+<a href="http://www.dlms.com/documentation/listofstandardobiscodesandmaintenanceproces/index.html">Excel
+sheet</a>.  OBIS codes are in the format of <em>A-B:C.D.E*F</em> where each
+letter is one byte. Only bytes C and D are mandatory. The six bytes
+have the following meaning:</p>
+</div>
+<table class="tableblock frame-none grid-all spread">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>A</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium: Defines the medium (e.g. electricity, gas) of the object. An object related to no medium (e.g. clock) is handled as abstract data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>B</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Channel: The channel number allows to differentiate between different inputs (e.g. when a data concentrator is connected to several meters).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>C</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the abstract of physical data items, related to the information source (e.g. reactive import energy).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>D</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines types, or the result of the processing of physical quantities identified with the value groups <strong>A</strong> and <strong>C</strong>, according to various specific algorithms (e.g. time integral).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>E</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value group E defines further processing or classification of quantities identified by value groups <strong>A</strong> to <strong>D</strong> (e.g. tariff number).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>F</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the storage of the data, identified by <strong>A</strong> to <strong>E</strong> (e.g. different billing periods). May be set to 0xFF (255) where this is irrelevant.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Both attribute and method addresses consist of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Class ID</p>
+</li>
+<li>
+<p>Logical Name (i.e. Obis code or instance ID)</p>
+</li>
+<li>
+<p>Attribute ID / Method ID</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The class ID of an object can be found in the
+<a href="http://www.dlms.com/documentation/listofstandardobiscodesandmaintenanceproces/index.html">Excel
+sheet</a> mentioned earlier, while the exact attribute ID depends on the
+class ID and can be extracted the best way by consulting the document
+IEC 62056-6-2 or the Blue Book from the DLMS UA. Usually the first
+attribute (attribute ID 1) of an COSEM interface class (IC) is the
+logical name of the object. Further attributes refer to actual data
+(see section 4.5 of IEC 62056-6-2).</p>
+</div>
+<div class="sect4">
+<h5 id="_example_addresses">Example Addresses</h5>
+<table class="tableblock frame-none grid-all spread">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Class ID</th>
+<th class="tableblock halign-left valign-top">Logical Name</th>
+<th class="tableblock halign-left valign-top">Attribute ID</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SAP_ASSIGNMENT(17)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.41.0.0.255</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SAP_assignment_list(2)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains the list of all logical devices and their SAP addresses within the physical device.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ASSOCIATION_LN(15)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.40.0.0.255</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object_list(2)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains the list of visible COSEM objects.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_short_name_referencing">4.4.2. Short Name Referencing</h4>
+<div class="paragraph">
+<p>The second way to address an attribute or method is by means of the so called <em>short
+address</em>. Short addresses are used for small devices and should only be
+used if the connected smart meter cannot communicate using logical
+names.</p>
+</div>
+<div class="paragraph">
+<p>When short name referencing is used the meter still holds a unique
+logical name (i.e. Obis code) for each of its objects. In addition
+each object has 2 byte short name that maps to the logical name. Thus
+a client can address each attribute or method using 2 bytes only.</p>
+</div>
+<div class="paragraph">
+<p>The address space of short addresses is not standardized like the logical
+names, meaning that the same address can lead to different objects on
+different devices.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dlms_services">4.5. DLMS Services</h3>
+<div class="paragraph">
+<p>After the connection to a logical device has been established, a
+client can send service requests to the server. In order to access an
+attribute, you may invoke the GET or SET service on one or more
+attributes in a single request. Similarly the ACTION service may be invoked on methods.</p>
+</div>
+<div class="sect3">
+<h4 id="_selective_access">4.5.1. Selective Access</h4>
+<div class="paragraph">
+<p>The GET and SET services allow the client to access just a part of a specific attribute.
+The part is defined by some specific selective access parameters.
+These selective access parameters are defined as part of the attribute specification.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security">4.6. Security</h3>
+<div class="paragraph">
+<p>The DLMS/COSEM standard differentiates between two security
+mechanisms: 1) the <em>authentication mechanism</em> (i.e. security level)
+and 2) the <em>encryption mechanism</em> (i.e. security suite). The two
+mechanisms often use the same keys but they can be chosen independently
+of each other and can be used in any combination.</p>
+</div>
+<div class="sect3">
+<h4 id="_authentication_mechanism">4.6.1. Authentication Mechanism</h4>
+<div class="paragraph">
+<p>The authentication mechanism is the mechanism by which client and
+server authenticate each other during connection build up. The
+following authentication mechanisms (also called security levels)
+exist:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Lowest Level Security (0)</dt>
+<dd>
+<p>No authentication is used.</p>
+</dd>
+<dt class="hdlist1">Low Level Security (1, LLS)</dt>
+<dd>
+<p>Only the client is authenticated using a
+plain text password.</p>
+</dd>
+<dt class="hdlist1">High Level Security (&gt;1, HLS)</dt>
+<dd>
+<p>In this case both client and server
+are authenticated. First both client and server exchange <em>challenge
+strings</em> (e.g. a random strings). Then both use cryptographic
+algorithms on these <em>challenge strings</em> and send the result back. The
+cryptographic algorith used for authentication depends on the HLS
+level:</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">HLS 2</dt>
+<dd>
+<p>A manufacturer specific algorithm is used that is not
+standardized.</p>
+</dd>
+<dt class="hdlist1">HLS 3</dt>
+<dd>
+<p>MD5 is used.</p>
+</dd>
+<dt class="hdlist1">HLS 4</dt>
+<dd>
+<p>SHA-1 is used</p>
+</dd>
+<dt class="hdlist1">HLS 5</dt>
+<dd>
+<p>Galois Message Authentication Code (GMAC) is used. The
+algorithm takes both the global encryption key (16 bytes) as well
+as the authentication key (16 bytes) as inputs.</p>
+</dd>
+<dt class="hdlist1">HLS 6</dt>
+<dd>
+<p>using SHA-256</p>
+</dd>
+<dt class="hdlist1">HLS 7</dt>
+<dd>
+<p>using ECDSA</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The jDLMS library supports lowest level, low level as well as HLS 5
+authentication at the moment.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_encryption_mechanism">4.6.2. Encryption Mechanism</h4>
+<div class="paragraph">
+<p>The encryption mechanism is used to encrypt messages and/or add
+authentication tags to individual messages. Until recently only one
+encryption mechanism (also called security suite) existed. It
+has the the ID 0. By now new security mechanisms have been defined.</p>
+</div>
+<div class="paragraph">
+<p>Encryption mechanism 0 is based on AES-GCM-128. It is the only
+mechanism currently supported by jDLMS. It uses the global unicast
+encryption key and, if available, the authentication key.</p>
+</div>
+<div class="paragraph">
+<p>Optionally a client may send a so called dedicated key (i.e. a session
+key) to the server during connection build up. The dedicated key is
+then used instead of the global encryption key for the remaining
+communication of this connection. The dedicated key is a temporary key
+that is usually generated ad-hoc at connection time.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_keys">4.6.3. Keys</h4>
+<div class="paragraph">
+<p>Several different keys exist which are used by the different security
+mechanisms.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Password/Secret</dt>
+<dd>
+<p>Used by LLS. The client sends the password to the
+server for authentication.</p>
+</dd>
+<dt class="hdlist1">Authentication key</dt>
+<dd>
+<p>Used by authentication mechanisms such as HLS 5
+as well as optionally by encryption mechanisms such as
+mechanism 0.</p>
+</dd>
+<dt class="hdlist1">Global unicast encryption key</dt>
+<dd>
+<p>Used by authentication mechanisms such
+as HLS 5 as well as by encryption mechanisms such as mechanism 0.</p>
+</dd>
+<dt class="hdlist1">Dedicated encryption key</dt>
+<dd>
+<p>A temporary session key that can optionally
+be used instead of the global encryption key by encryption mechanisms.</p>
+</dd>
+<dt class="hdlist1">Master key</dt>
+<dd>
+<p>The master key is used for wrapping global keys. When
+changing the global encryption or authentication keys one has to wrap
+the new key before transmitting it.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology">5. Terminology</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Client ID</dt>
+<dd>
+<p>Synonyms: client wPort, client SAP</p>
+</dd>
+<dt class="hdlist1">COSEM</dt>
+<dd>
+<p>Companion Specification for Energy Metering</p>
+</dd>
+<dt class="hdlist1">DLMS</dt>
+<dd>
+<p>Device Language Message Specification</p>
+</dd>
+<dt class="hdlist1">HDLC</dt>
+<dd>
+<p>High-Level Data Link Control</p>
+</dd>
+<dt class="hdlist1">HLS</dt>
+<dd>
+<p>High Level Security</p>
+</dd>
+<dt class="hdlist1">Logical Device Address</dt>
+<dd>
+<p>Synonyms: server wPort, server SAP</p>
+</dd>
+<dt class="hdlist1">OBIS</dt>
+<dd>
+<p>Object Identification System</p>
+</dd>
+<dt class="hdlist1">SAP</dt>
+<dd>
+<p>Service Access Point</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authors">6. Authors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Stefan Feuerhahn</p>
+</li>
+<li>
+<p>Dirk Zimmermann</p>
+</li>
+<li>
+<p>Albrecht Schall</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Former developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Karsten M&uuml;ller-Bier</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-07-26 11:20:14 +02:00
+</div>
+</div>
+</body>
+</html>
