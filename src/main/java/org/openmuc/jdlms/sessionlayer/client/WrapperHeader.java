@@ -6,6 +6,7 @@ import static org.openmuc.jdlms.JDlmsException.Fault.SYSTEM;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.openmuc.jdlms.FatalJDlmsException;
 import org.openmuc.jdlms.JDlmsException.ExceptionId;
@@ -17,19 +18,22 @@ public class WrapperHeader {
     private final int sourceWPort;
     private final int destinationWPort;
     private final int length;
+    private final ByteOrder byteOrder;
 
     private WrapperHeader(WrapperHeaderBuilder builder) {
         this.version = builder.version;
         this.sourceWPort = builder.sourceWPort;
         this.destinationWPort = builder.destinationWPort;
         this.length = builder.length;
+        this.byteOrder = builder.byteOrder;
     }
 
-    private WrapperHeader(int version, int sourceWPort, int destinationWPort, int length) {
+    private WrapperHeader(int version, int sourceWPort, int destinationWPort, int length, ByteOrder byteOrder) {
         this.version = version;
         this.sourceWPort = sourceWPort;
         this.destinationWPort = destinationWPort;
         this.length = length;
+        this.byteOrder = byteOrder;
     }
 
     public int getVersion() {
@@ -48,8 +52,13 @@ public class WrapperHeader {
         return length;
     }
 
+    public ByteOrder getByteOrder() {
+        return byteOrder;
+    }
+
     public byte[] encode() {
         return ByteBuffer.allocate(HEADER_LENGTH)
+                .order(byteOrder)
                 .putShort((short) version)
                 .putShort((short) sourceWPort)
                 .putShort((short) destinationWPort)
@@ -80,23 +89,25 @@ public class WrapperHeader {
 
         int length = iStream.readUnsignedShort();
 
-        return new WrapperHeader(version, sourceWPort, destinationWPort, length);
+        return new WrapperHeader(version, sourceWPort, destinationWPort, length, ByteOrder.nativeOrder());
     }
 
-    public static WrapperHeaderBuilder builder(int sourceWPort, int destinationWPort) {
-        return new WrapperHeaderBuilder(sourceWPort, destinationWPort);
+    public static WrapperHeaderBuilder builder(int sourceWPort, int destinationWPort, ByteOrder byteOrder) {
+        return new WrapperHeaderBuilder(sourceWPort, destinationWPort, byteOrder);
     }
 
     public static class WrapperHeaderBuilder {
         private final int version;
         private final int sourceWPort;
         private final int destinationWPort;
+        private final ByteOrder byteOrder;
         private int length;
 
-        private WrapperHeaderBuilder(int sourceWPort, int destinationWPort) {
+        private WrapperHeaderBuilder(int sourceWPort, int destinationWPort, ByteOrder byteOrder) {
             this.version = 1;
             this.sourceWPort = sourceWPort;
             this.destinationWPort = destinationWPort;
+            this.byteOrder = byteOrder;
         }
 
         public WrapperHeaderBuilder setLength(int length) {

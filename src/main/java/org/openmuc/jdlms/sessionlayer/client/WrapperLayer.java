@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,12 +30,16 @@ public class WrapperLayer implements SessionLayer {
 
     public WrapperLayer(Settings settings, TransportLayer transportLayer) throws IOException {
         this.settings = settings;
-        this.headerBuilder = WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId());
+        this.headerBuilder = createWrapperHeaderBuilder(settings);
         this.transportLayer = transportLayer;
 
         this.closed = true;
 
         this.exec = Executors.newSingleThreadExecutor();
+    }
+
+    protected WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
+        return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.nativeOrder());
     }
 
     @Override

@@ -25,13 +25,16 @@ import static org.openmuc.jdlms.internal.Constants.DEFAULT_DLMS_PORT;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 
 import org.openmuc.jdlms.sessionlayer.client.HdlcLayer;
 import org.openmuc.jdlms.sessionlayer.client.SessionLayer;
+import org.openmuc.jdlms.sessionlayer.client.WrapperHeader;
 import org.openmuc.jdlms.sessionlayer.client.WrapperLayer;
 import org.openmuc.jdlms.sessionlayer.hdlc.HdlcAddress;
 import org.openmuc.jdlms.sessionlayer.hdlc.HdlcAddressPair;
 import org.openmuc.jdlms.settings.client.HdlcTcpSettings;
+import org.openmuc.jdlms.settings.client.Settings;
 import org.openmuc.jdlms.transportlayer.client.TcpLayer;
 import org.openmuc.jdlms.transportlayer.client.TransportLayer;
 import org.openmuc.jdlms.transportlayer.client.UdpLayer;
@@ -119,6 +122,7 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
 
         default:
         case WRAPPER:
+        case WRAPPER_REVERSED:
             TransportLayer tl;
             if (this.tranportProtocol == InetTransportProtocol.TCP) {
                 tl = new TcpLayer(settings);
@@ -127,7 +131,13 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
                 tl = new UdpLayer(settings);
             }
 
-            return new WrapperLayer(settings, tl);
+                return sessionLayerType == InetSessionLayerType.WRAPPER ? new WrapperLayer(settings, tl) :
+                        new WrapperLayer(settings, tl) {
+                            @Override
+                            protected WrapperHeader.WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
+                                return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.LITTLE_ENDIAN);
+                            }
+                        };
         }
     }
 
@@ -173,7 +183,8 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
 
     private enum InetSessionLayerType {
         HDLC,
-        WRAPPER
+        WRAPPER,
+        WRAPPER_REVERSED
     }
 
     public enum InetTransportProtocol {
