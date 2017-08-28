@@ -147,6 +147,7 @@ local.properties
 .worksheet
 ### JetBrains template
 .idea/
+jdlms.iml
 
 ## File-based project format:
 *.iws
