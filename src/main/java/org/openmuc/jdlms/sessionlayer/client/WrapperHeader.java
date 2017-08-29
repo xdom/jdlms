@@ -92,6 +92,10 @@ public class WrapperHeader {
         return new WrapperHeader(version, sourceWPort, destinationWPort, length, ByteOrder.nativeOrder());
     }
 
+    public static WrapperHeaderBuilder builder(int sourceWPort, int destinationWPort) {
+        return builder(sourceWPort, destinationWPort, ByteOrder.nativeOrder());
+    }
+
     public static WrapperHeaderBuilder builder(int sourceWPort, int destinationWPort, ByteOrder byteOrder) {
         return new WrapperHeaderBuilder(sourceWPort, destinationWPort, byteOrder);
     }

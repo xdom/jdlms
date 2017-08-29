@@ -131,13 +131,14 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
                 tl = new UdpLayer(settings);
             }
 
-                return sessionLayerType == InetSessionLayerType.WRAPPER ? new WrapperLayer(settings, tl) :
-                        new WrapperLayer(settings, tl) {
-                            @Override
-                            protected WrapperHeader.WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
-                                return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.LITTLE_ENDIAN);
-                            }
-                        };
+            return sessionLayerType == InetSessionLayerType.WRAPPER
+                    ? new WrapperLayer(settings, tl)
+                    : new WrapperLayer(settings, tl) {
+                @Override
+                protected WrapperHeader.WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
+                    return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.LITTLE_ENDIAN);
+                }
+            };
         }
     }
 
