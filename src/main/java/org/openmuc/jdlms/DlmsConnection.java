@@ -773,8 +773,8 @@ public abstract class DlmsConnection implements AutoCloseable {
         }
     }
 
-    protected static void setupAarqAuthentication(AARQApdu aarq, byte[] clientToServerChallenge) {
-        aarq.setSenderAcseRequirements(new ACSERequirements(new byte[] { (byte) 0x80 }, 2));
+    private static void setupAarqAuthentication(AARQApdu aarq, byte[] clientToServerChallenge) {
+        aarq.setSenderAcseRequirements(new ACSERequirements(new byte[] { (byte) 0x80 }, 1));
 
         AuthenticationValue authenticationValue = new AuthenticationValue();
         authenticationValue.setCharstring(new BerOctetString(clientToServerChallenge));
