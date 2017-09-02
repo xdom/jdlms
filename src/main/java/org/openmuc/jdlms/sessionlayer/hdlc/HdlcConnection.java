@@ -34,7 +34,7 @@ public class HdlcConnection {
     private final BlockingQueue<HdlcFrame> incommingQueue;
     private ExecutorService connectionreaderExecutor;
 
-    HdlcConnection(Settings settings, TransportLayer transportLayer) {
+    protected HdlcConnection(Settings settings, TransportLayer transportLayer) {
         this.settings = settings;
         this.transportLayer = transportLayer;
         this.listeners = new LinkedHashMap<>();
