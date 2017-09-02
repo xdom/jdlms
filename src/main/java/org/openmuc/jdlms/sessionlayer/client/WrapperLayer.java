@@ -39,7 +39,7 @@ public class WrapperLayer implements SessionLayer {
     }
 
     protected WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
-        return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.nativeOrder());
+        return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId());
     }
 
     @Override

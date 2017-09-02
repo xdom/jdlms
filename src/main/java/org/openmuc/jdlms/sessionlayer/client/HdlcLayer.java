@@ -35,15 +35,8 @@ import org.openmuc.jdlms.RawMessageData;
 import org.openmuc.jdlms.RawMessageData.MessageSource;
 import org.openmuc.jdlms.RawMessageData.RawMessageDataBuilder;
 import org.openmuc.jdlms.RawMessageListener;
-import org.openmuc.jdlms.sessionlayer.hdlc.FrameType;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcAddressPair;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcDispatcher;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcDispatcher.HdlcConnection;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcDispatcher.HdlcConnectionListener;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcFrame;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcFrameSegmentBuffer;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcMessageQueue;
-import org.openmuc.jdlms.sessionlayer.hdlc.HdlcParameters;
+import org.openmuc.jdlms.sessionlayer.hdlc.*;
+import org.openmuc.jdlms.sessionlayer.hdlc.HdlcConnection.Listener;
 import org.openmuc.jdlms.settings.client.HdlcSettings;
 
 /**
@@ -68,6 +61,10 @@ public class HdlcLayer implements SessionLayer {
     private final HdlcConnection hdlcConnection;
 
     public HdlcLayer(HdlcSettings settings) {
+        this(settings, HdlcDispatcher.instance());
+    }
+
+    public HdlcLayer(HdlcSettings settings, HdlcConnectionFactory factory) {
         this.settings = settings;
 
         this.sendSeqNum = new HdlcSequenceNumber();
@@ -77,7 +74,7 @@ public class HdlcLayer implements SessionLayer {
 
         this.closed = true;
 
-        this.hdlcConnection = HdlcDispatcher.instance().connect(settings, new HdlcConnectionListenerImpl());
+        this.hdlcConnection = factory.getHdlcConnection(settings, new HdlcConnectionListenerImpl());
     }
 
     @Override
@@ -195,7 +192,7 @@ public class HdlcLayer implements SessionLayer {
         this.hdlcConnection.send(dataToSend);
     }
 
-    private class HdlcConnectionListenerImpl implements HdlcConnectionListener {
+    private class HdlcConnectionListenerImpl implements Listener {
 
         private final HdlcFrameSegmentBuffer segmentBuffer;
 

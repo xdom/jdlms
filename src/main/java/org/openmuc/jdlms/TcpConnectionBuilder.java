@@ -115,14 +115,13 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
         return buildConnection(settings, sessionLayer);
     }
 
-    private SessionLayer buildSessionLayer(TcpSettingsImpl settings) throws IOException {
+    protected SessionLayer buildSessionLayer(TcpSettingsImpl settings) throws IOException {
         switch (sessionLayerType) {
         case HDLC:
             return new HdlcLayer(settings);
 
         default:
         case WRAPPER:
-        case WRAPPER_REVERSED:
             TransportLayer tl;
             if (this.tranportProtocol == InetTransportProtocol.TCP) {
                 tl = new TcpLayer(settings);
@@ -131,14 +130,7 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
                 tl = new UdpLayer(settings);
             }
 
-            return sessionLayerType == InetSessionLayerType.WRAPPER
-                    ? new WrapperLayer(settings, tl)
-                    : new WrapperLayer(settings, tl) {
-                @Override
-                protected WrapperHeader.WrapperHeaderBuilder createWrapperHeaderBuilder(Settings settings) {
-                    return WrapperHeader.builder(settings.clientId(), settings.logicalDeviceId(), ByteOrder.LITTLE_ENDIAN);
-                }
-            };
+            return new WrapperLayer(settings, tl);
         }
     }
 
