@@ -18,7 +18,7 @@ public class HdlcDispatcher extends AbstractHdlcConnectionFactory {
 
     private final Map<Object, HdlcConnection> hdlcConnectionMap;
 
-    private HdlcDispatcher() {
+    protected HdlcDispatcher() {
         this.hdlcConnectionMap = new HashMap<>();
     }
 
