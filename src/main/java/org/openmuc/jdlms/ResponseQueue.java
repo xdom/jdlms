@@ -41,7 +41,7 @@ class ResponseQueue {
 
     public void putError(IOException ex) {
         this.lastError = ex;
-        put(null);
+        put(new COSEMpdu());
     }
 
     public synchronized COSEMpdu poll() throws IOException {
