@@ -787,6 +787,14 @@ public abstract class DlmsConnection implements AutoCloseable {
         public void dataReceived(byte[] data, RawMessageDataBuilder rawMessageBuilder) {
             APdu aPdu;
             try {
+                // XXX: Remove this
+                RawMessageListener rawMessageListener = settings.rawMessageListener();
+                if (rawMessageListener != null) {
+                    RawMessageData rawMessageData = rawMessageBuilder.setMessage(data)
+                            .setMessageSource(MessageSource.SERVER).build();
+                    rawMessageListener.messageCaptured(rawMessageData);
+                }
+
                 aPdu = encodeData(data, rawMessageBuilder);
 
                 COSEMpdu cosemPdu = aPdu.getCosemPdu();
