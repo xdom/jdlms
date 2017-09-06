@@ -76,7 +76,8 @@ public class WrapperHeader {
             return decodeLE(iStream, firstByte);
         } else {
             throw new FatalJDlmsException(ExceptionId.WRAPPER_HEADER_INVALID_VERSION, SYSTEM,
-                    "Message does not start with 0x00 or 0x01 as expected in by the wrapper header.");
+                    "Message does not start with 0x00 or 0x01 as expected in by the wrapper header." +
+                            " Starts with: " + Integer.toHexString(firstByte));
         }
     }
 
