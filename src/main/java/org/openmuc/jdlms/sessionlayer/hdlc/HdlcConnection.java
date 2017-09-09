@@ -50,9 +50,7 @@ public class HdlcConnection {
     public synchronized HdlcParameters open(HdlcSettings settings) throws IOException {
         if (this.transportLayer.isClosed()) {
             this.transportLayer.open();
-
-            this.connectionreaderExecutor = Executors.newSingleThreadExecutor();
-            this.connectionreaderExecutor.execute(new ConnectionReader());
+            onTransportLayerOpen();
         }
 
         this.connectionKey = settings.addressPair();
@@ -65,6 +63,11 @@ public class HdlcConnection {
         } finally {
             this.connectionKey = null;
         }
+    }
+
+    protected void onTransportLayerOpen() {
+        this.connectionreaderExecutor = Executors.newSingleThreadExecutor();
+        this.connectionreaderExecutor.execute(new ConnectionReader());
     }
 
     public synchronized void disconnect(HdlcSettings settings) throws IOException {
