@@ -57,8 +57,7 @@ public class HdlcConnection {
         try {
             return connectSequence(settings);
         } catch (IOException ex) {
-            removeListenerAndTryClosePhysicalLayer(settings);
-
+            closeAndShutdown(settings);
             throw ex;
         } finally {
             this.connectionKey = null;
