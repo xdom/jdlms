@@ -327,7 +327,7 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
         } catch (Exception e) {
             try {
                 connection.close();
-            } catch (IOException closingException) {
+            } catch (Exception closingException) {
                 System.err.println("Error occurred, while closing.");
                 closingException.printStackTrace();
             }
