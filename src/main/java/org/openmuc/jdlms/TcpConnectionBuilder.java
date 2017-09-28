@@ -134,7 +134,7 @@ public class TcpConnectionBuilder extends ConnectionBuilder<TcpConnectionBuilder
         }
     }
 
-    public class TcpSettingsImpl extends SettingsImpl implements HdlcTcpSettings {
+    public static class TcpSettingsImpl extends SettingsImpl implements HdlcTcpSettings {
 
         private final InetAddress inetAddress;
         private final int port;

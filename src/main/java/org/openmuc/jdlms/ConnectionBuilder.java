@@ -354,7 +354,7 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
     /**
      * This Settings can be overridden by an implementing Settings.
      */
-    protected abstract class SettingsImpl implements Settings {
+    protected static abstract class SettingsImpl implements Settings {
         private final byte[] systemTitle;
         private final int challengeLength;
         private final int responseTimeout;
