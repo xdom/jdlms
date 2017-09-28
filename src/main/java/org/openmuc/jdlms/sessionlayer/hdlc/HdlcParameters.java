@@ -33,7 +33,7 @@ public class HdlcParameters {
     private static final byte NUM_WINDOW_SIZE_BYTES = 4;
 
     public static final int MAX_INFORMATION_LENGTH = 2030;
-    public static final int MIN_INFORMATION_LENGTH = 128;
+    public static final int MIN_INFORMATION_LENGTH = 16;
     public static final int MIN_WINDOW_SIZE = 1;
     public static final int MAX_WINDOW_SIZE = 7;
 
