@@ -65,10 +65,10 @@ public class HdlcParameters {
 
     public HdlcParameters(int receiveInformationLength, int receiveWindowSize, int transmitInformationLength,
             int transmitWindowSize) {
-        this.maxReceiveInformationLength = valueConsiderInformationLength(receiveInformationLength);
+        this.maxReceiveInformationLength = 16;
         this.receiveWindowSize = valueConsiderWindowSize(receiveWindowSize);
 
-        this.maxTransmitInformationLength = 16;
+        this.maxTransmitInformationLength = valueConsiderInformationLength(transmitInformationLength);
         this.transmitWindowSize = valueConsiderWindowSize(transmitWindowSize);
     }
 
