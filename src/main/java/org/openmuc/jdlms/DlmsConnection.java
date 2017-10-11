@@ -116,7 +116,8 @@ public abstract class DlmsConnection implements AutoCloseable {
         this.invokeId = 1;
         this.frameCounter = 1;
 
-        this.cosemResponseQ = new ResponseQueue();
+        this.cosemResponseQ = settings == null ? new ResponseQueue()
+                : new ResponseQueue(settings.responseTimeout());
     }
 
     /**
@@ -570,6 +571,9 @@ public abstract class DlmsConnection implements AutoCloseable {
         this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
 
         COSEMpdu responsePdu = this.cosemResponseQ.poll();
+        if (responsePdu == null) {
+            throw new ResponseTimeoutException("Waiting for response timed out.");
+        }
 
         if (settings.referencingMethod() == ReferencingMethod.LOGICAL) {
             for (int i = 0; i < 3; i++) {
@@ -584,6 +588,9 @@ public abstract class DlmsConnection implements AutoCloseable {
                 }
 
                 responsePdu = this.cosemResponseQ.poll();
+                if (responsePdu == null) {
+                    throw new ResponseTimeoutException("Waiting for response timed out.");
+                }
             }
         }
 

@@ -20,16 +20,26 @@
  */
 package org.openmuc.jdlms;
 
+import org.openmuc.jdlms.internal.asn1.cosem.COSEMpdu;
+
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import org.openmuc.jdlms.internal.asn1.cosem.COSEMpdu;
+import java.util.concurrent.TimeUnit;
 
 class ResponseQueue {
 
     private final ArrayBlockingQueue<COSEMpdu> queue = new ArrayBlockingQueue<>(1);
+    private final int timeout;
     private volatile boolean polled;
     private IOException lastError;
+
+    public ResponseQueue() {
+        this.timeout = 0;
+    }
+
+    public ResponseQueue(int timeout) {
+        this.timeout = timeout;
+    }
 
     public void put(COSEMpdu data) {
         try {
@@ -47,7 +57,8 @@ class ResponseQueue {
     public synchronized COSEMpdu poll() throws IOException {
         this.polled = true;
         try {
-            COSEMpdu cosemPdu = queue.take();
+            COSEMpdu cosemPdu = timeout == 0 ? queue.take()
+                    : queue.poll(timeout, TimeUnit.MILLISECONDS);
 
             if (this.lastError != null) {
                 IOException le = this.lastError;
