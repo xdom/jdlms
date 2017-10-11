@@ -82,7 +82,6 @@ public class HdlcDispatcher extends AbstractHdlcConnectionFactory {
             throw new UnsupportedOperationException();
         }
 
-        hdlcConnection.registerNewListener(settings.addressPair(), listener);
         return hdlcConnection;
     }
 

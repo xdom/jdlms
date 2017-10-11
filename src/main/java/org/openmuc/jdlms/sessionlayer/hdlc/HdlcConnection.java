@@ -125,6 +125,8 @@ public class HdlcConnection {
             receivedFrame = this.incommingQueue.poll(responseTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             // ignore, since this should't occur
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
         return receivedFrame;
     }
@@ -273,6 +275,8 @@ public class HdlcConnection {
                             incommingQueue.put(hdlcFrame);
                         } catch (InterruptedException e) {
                             // ignore this
+                            // Restore interrupted state...
+                            Thread.currentThread().interrupt();
                         }
                     } else {
                         synchronized (listeners) {
