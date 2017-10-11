@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.internal.transportlayer.server;
 
 import java.io.DataInputStream;
@@ -48,7 +67,7 @@ public class ServerTcpLayer implements ServerTransportLayer {
 
     public static class TcpServerConnectionInformation extends ServerConnectionInformationImpl {
 
-        public InetAddress clienInetAddress;
+        private InetAddress clienInetAddress;
 
         public TcpServerConnectionInformation(InetAddress clienInetAddress) {
             this.clienInetAddress = clienInetAddress;
@@ -82,31 +101,39 @@ public class ServerTcpLayer implements ServerTransportLayer {
         @Override
         public void run() {
             try {
-                while (this.run) {
-                    Socket socket = this.serverSocket.accept();
-                    if (this.threadPool.getActiveCount() >= this.maxPermits) {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            // ignore
-                        }
-                        continue;
-                    }
-
-                    ServerSessionLayer sessionLayer = sessionLayerFactory
-                            .newSesssionLayer(new TcpSocketAccessor(socket), settings);
-
-                    Long connectionId = ++connections;
-
-                    Association association = new Association(dataDirectory, sessionLayer, connectionId, settings,
-                            new TcpServerConnectionInformation(socket.getInetAddress()));
-
-                    this.threadPool.execute(association);
-                }
+                saveRun();
             } catch (IOException e) {
                 // ignore here, connection will be closed
             }
 
+        }
+
+        private void saveRun() throws IOException {
+            while (this.run) {
+                acceptCon();
+            }
+        }
+
+        private void acceptCon() throws IOException {
+            Socket socket = this.serverSocket.accept();
+            if (this.threadPool.getActiveCount() >= this.maxPermits) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+                return;
+            }
+
+            ServerSessionLayer sessionLayer = sessionLayerFactory.newSesssionLayer(new TcpSocketAccessor(socket),
+                    settings);
+
+            Long connectionId = ++connections;
+
+            Association association = new Association(dataDirectory, sessionLayer, connectionId, settings,
+                    new TcpServerConnectionInformation(socket.getInetAddress()));
+
+            this.threadPool.execute(association);
         }
 
         @Override

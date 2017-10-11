@@ -34,15 +34,6 @@ public interface CosemDateFormat {
     byte[] encode();
 
     /**
-     * Converts the COSEM DATE/TIME to a {@link Calendar}.
-     * 
-     * @return the object as a calendar.
-     */
-    Calendar toCalendar();
-
-    long asUnixTimeStanp();
-
-    /**
      * The size of the octet string.
      * 
      * @return the size.

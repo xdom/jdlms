@@ -386,20 +386,17 @@ public final class DataConverter {
 
         switch (type) {
         case FLOAT64:
-
-            buffer = ByteBuffer.allocate(8);
-            buffer.putDouble(value.doubleValue());
+            buffer = ByteBuffer.allocate(8).putDouble(value.doubleValue());
             buffer.flip();
 
-            result.setfloat64(new AxdrOctetString(8, buffer.array()));
+            result.setfloat64(new AxdrOctetString(buffer.array()));
             break;
 
         case FLOAT32:
-            buffer = ByteBuffer.allocate(4);
-            buffer.putDouble(value.floatValue());
+            buffer = ByteBuffer.allocate(4).putFloat(value.floatValue());
             buffer.flip();
 
-            result.setfloat32(new AxdrOctetString(4, buffer.array()));
+            result.setfloat32(new AxdrOctetString(buffer.array()));
             break;
 
         case ENUMERATE:
@@ -451,12 +448,12 @@ public final class DataConverter {
 
         byte[] obisCodeBytes = pdu.cosem_attribute_descriptor.instance_id.getValue();
 
-        Long timestamp = null;
-        if (pdu.time.isUsed()) {
-            CosemDateTime dateTime = CosemDateTime.decode(pdu.time.getValue().getValue());
+        Long timestamp = System.currentTimeMillis();
 
-            timestamp = dateTime.toCalendar().getTimeInMillis();
-        }
+        /**
+         * if (pdu.time.isUsed()) { CosemDateTime dateTime = CosemDateTime.decode(pdu.time.getValue().getValue());
+         * timestamp = dateTime.toCalendar().getTimeInMillis(); }
+         */
 
         DataObject newValue = null;
         if (pdu.attribute_value != null) {

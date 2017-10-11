@@ -128,89 +128,94 @@ public class APdu {
             SecuritySuite securitySuite, RawMessageData.RawMessageDataBuilder rawMessageBuilder) throws IOException {
         DataInputStream is = new DataInputStream(new ByteArrayInputStream(bytes));
 
-        APdu aPdu = new APdu();
+        try {
+            APdu aPdu = new APdu();
 
-        byte[] serverSysT = provServerSysT;
+            byte[] serverSysT = provServerSysT;
 
-        final int tag = bytes[0] & 0xFF;
-        if (tag >= 0x60 && tag <= 0x63) {
-            aPdu.acseAPdu = new ACSEApdu();
-            ACSEApdu acseAPdu = aPdu.acseAPdu;
-            acseAPdu.decode(is, null);
+            final int tag = bytes[0] & 0xFF;
+            if (tag >= 0x60 && tag <= 0x63) {
+                aPdu.acseAPdu = new ACSEApdu();
+                ACSEApdu acseAPdu = aPdu.acseAPdu;
+                acseAPdu.decode(is, null);
 
-            validateAssociateResult(aPdu);
+                validateAssociateResult(aPdu);
 
-            if (acseAPdu.getAarq() != null) {
-                is = new DataInputStream(new ByteArrayInputStream(acseAPdu.getAarq().getUserInformation().value));
-            }
-            else if (acseAPdu.getAare() != null) {
-                byte[] userInfo = acseAPdu.getAare().getUserInformation().value;
-
-                /* Workaround for E650 LGZ bug */
-                if (is.available() > 0) {
-                    byte[] remaining = new byte[is.available()];
-                    is.readFully(remaining);
-                    userInfo = ByteBuffer.allocate(userInfo.length + remaining.length)
-                            .put(userInfo)
-                            .put(remaining)
-                            .array();
+                if (acseAPdu.getAarq() != null) {
+                    is = new DataInputStream(new ByteArrayInputStream(acseAPdu.getAarq().getUserInformation().value));
                 }
-                is = new DataInputStream(new ByteArrayInputStream(userInfo));
+                else if (acseAPdu.getAare() != null) {
+                    byte[] userInfo = acseAPdu.getAare().getUserInformation().value;
+
+                    /* Workaround for E650 LGZ bug */
+                    if (is.available() > 0) {
+                        byte[] remaining = new byte[is.available()];
+                        is.readFully(remaining);
+                        userInfo = ByteBuffer.allocate(userInfo.length + remaining.length)
+                                .put(userInfo)
+                                .put(remaining)
+                                .array();
+                    }
+                    is = new DataInputStream(new ByteArrayInputStream(userInfo));
+                }
+
+                if (encrypt) {
+                    if (acseAPdu.getAare() != null && acseAPdu.getAare().getRespondingAPTitle() != null) {
+                        serverSysT = acseAPdu.getAare().getRespondingAPTitle().getApTitleForm2().value;
+                    }
+                    else if (acseAPdu.getAarq() != null) {
+                        ContextId contextId = ObjectIdentifier
+                                .applicationContextIdFrom(acseAPdu.getAarq().getApplicationContextName());
+
+                        if (!contextId.isCiphered()) {
+                            throw new AssociatRequestException(AcseServiceUser.APPLICATION_CONTEXT_NAME_NOT_SUPPORTED);
+                        }
+
+                        if (acseAPdu.getAarq().getCallingAPTitle() != null) {
+                            serverSysT = acseAPdu.getAarq().getCallingAPTitle().getApTitleForm2().value;
+
+                        }
+                    }
+                }
+                if (acseAPdu.getRlrq() != null || acseAPdu.getRlre() != null) {
+                    return aPdu;
+                }
+
             }
 
+            byte[] ciphertext = null;
+            byte[] plaintext = null;
+
+            InputStream cosemPduIs = is;
             if (encrypt) {
-                if (acseAPdu.getAare() != null && acseAPdu.getAare().getRespondingAPTitle() != null) {
-                    serverSysT = acseAPdu.getAare().getRespondingAPTitle().getApTitleForm2().value;
-                }
-                else if (acseAPdu.getAarq() != null) {
-                    ContextId contextId = ObjectIdentifier
-                            .applicationContextIdFrom(acseAPdu.getAarq().getApplicationContextName());
 
-                    if (!contextId.isCiphered()) {
-                        throw new AssociatRequestException(AcseServiceUser.APPLICATION_CONTEXT_NAME_NOT_SUPPORTED);
-                    }
+                is.read();
 
-                    if (acseAPdu.getAarq().getCallingAPTitle() != null) {
-                        serverSysT = acseAPdu.getAarq().getCallingAPTitle().getApTitleForm2().value;
+                AxdrLength axdrLength = new AxdrLength();
+                axdrLength.decode(is);
+                int encLength = axdrLength.getValue();
 
-                    }
-                }
-            }
-            if (acseAPdu.getRlrq() != null || acseAPdu.getRlre() != null) {
-                return aPdu;
+                ciphertext = new byte[encLength];
+                is.readFully(ciphertext);
+
+                plaintext = GcmModule.decrypt(ciphertext, serverSysT, securitySuite);
+
+                cosemPduIs = new ByteArrayInputStream(plaintext);
             }
 
+            int size = cosemPduIs.available();
+            if (size > 0) {
+                aPdu.cosemPdu = new COSEMpdu();
+                aPdu.cosemPdu.decode(cosemPduIs);
+            }
+
+            setDataToBuilder(aPdu, rawMessageBuilder, ciphertext, plaintext);
+
+            return aPdu;
+        } finally {
+            is.close();
         }
 
-        byte[] ciphertext = null;
-        byte[] plaintext = null;
-
-        InputStream cosemPduIs = is;
-        if (encrypt) {
-
-            is.read();
-
-            AxdrLength axdrLength = new AxdrLength();
-            axdrLength.decode(is);
-            int encLength = axdrLength.getValue();
-
-            ciphertext = new byte[encLength];
-            is.readFully(ciphertext);
-
-            plaintext = GcmModule.decrypt(ciphertext, serverSysT, securitySuite);
-
-            cosemPduIs = new ByteArrayInputStream(plaintext);
-        }
-
-        int size = cosemPduIs.available();
-        if (size > 0) {
-            aPdu.cosemPdu = new COSEMpdu();
-            aPdu.cosemPdu.decode(cosemPduIs);
-        }
-
-        setDataToBuilder(aPdu, rawMessageBuilder, ciphertext, plaintext);
-
-        return aPdu;
     }
 
     private static void validateAssociateResult(APdu aPdu) throws FatalJDlmsException {

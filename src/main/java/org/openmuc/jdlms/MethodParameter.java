@@ -34,7 +34,7 @@ public final class MethodParameter extends CosemResourceDescriptor {
     /**
      * Parameter transmitted to be used by the method. May be null if not needed. (Method without parameter)
      */
-    private final DataObject methodParameter;
+    private final DataObject param;
 
     /**
      * Creates an action parameter for that particular method with no data container
@@ -68,7 +68,7 @@ public final class MethodParameter extends CosemResourceDescriptor {
      */
     public MethodParameter(int classId, ObisCode instanceId, int methodId, DataObject methodParameter) {
         super(classId, instanceId, methodId);
-        this.methodParameter = methodParameter;
+        this.param = methodParameter;
     }
 
     public MethodParameter(int classId, String instanceId, int methodId, DataObject methodParameter) {
@@ -84,7 +84,7 @@ public final class MethodParameter extends CosemResourceDescriptor {
     }
 
     public DataObject getParameter() {
-        return methodParameter;
+        return param;
     }
 
     @Override

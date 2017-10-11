@@ -133,7 +133,7 @@ public class HdlcAddress {
             int upperLength = (byteLength + 1) / 2;
             int lowerLength = byteLength / 2;
 
-            if (!(logicalId >= Math.pow(2, 7 * upperLength) || physicalId >= Math.pow(2, 7 * lowerLength)
+            if (!(logicalId >= Math.pow(2d, 7d * upperLength) || physicalId >= Math.pow(2d, 7d * lowerLength)
                     || logicalId < 0 || physicalId < 0)) {
                 return;
             }

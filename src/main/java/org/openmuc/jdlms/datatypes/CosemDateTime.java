@@ -24,16 +24,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Class representing the COSEM DateTime.
  */
-public class CosemDateTime extends CommonDateFormat {
+public class CosemDateTime implements CosemDateFormat {
 
     private static final int DEVIATION_NOT_SPECIFIED = 0x8000;
 
@@ -151,20 +149,6 @@ public class CosemDateTime extends CommonDateFormat {
         this.time = new CosemTime(hour, minute, second, hundredths);
 
         initFields(deviation, clockStatus);
-    }
-
-    public CosemDateTime(long timeStamp, TimeZone timeZone) {
-        this.date = new CosemDate(timeStamp);
-        this.time = new CosemTime(timeStamp);
-
-        int deviation = (int) TimeUnit.MINUTES.convert(timeZone.getRawOffset(), TimeUnit.MILLISECONDS);
-        if (timeZone.getDSTSavings() != 0) {
-            initFields(deviation, ClockStatus.DAYLIGHT_SAVING_ACTIVE);
-        }
-        else {
-            initFields(deviation);
-        }
-
     }
 
     /**
@@ -291,29 +275,6 @@ public class CosemDateTime extends CommonDateFormat {
 
         byteBuffer.put(this.subOctetString);
         return byteBuffer.array();
-    }
-
-    @Override
-    public Calendar toCalendar() {
-
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-
-        date.initCalendar(cal);
-        time.initCalendar(cal);
-
-        short deviation = (short) get(Field.DEVIATION);
-
-        Set<ClockStatus> clockStatus = ClockStatus.clockStatusFrom((byte) get(Field.CLOCK_STATUS));
-        if (clockStatus.contains(ClockStatus.DAYLIGHT_SAVING_ACTIVE)) {
-            // cal.set(Calendar.DST_OFFSET, (int) TimeUnit.MILLISECONDS.convert(-1, TimeUnit.HOURS));
-        }
-
-        if (((deviation & 0xFFFF) ^ 0x8000) != 0x0) {
-            int timeZoneOffset = (int) TimeUnit.MILLISECONDS.convert(deviation, TimeUnit.MINUTES);
-            cal.set(Calendar.ZONE_OFFSET, timeZoneOffset);
-        }
-
-        return cal;
     }
 
     @Override

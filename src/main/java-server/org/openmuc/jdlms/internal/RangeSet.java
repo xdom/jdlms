@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.internal;
 
 import java.util.LinkedList;
@@ -58,42 +77,48 @@ public class RangeSet<E extends Comparable<E>, T extends Range<E>> {
      */
     public T add(T entry) {
         final RangeEntry newEntry = new RangeEntry(entry);
-        if (this.rootElement == null) {
-            this.smallest = this.biggest = this.rootElement = newEntry;
+        if (this.rootElement != null) {
+            return addNode(entry, this.rootElement);
+        }
 
-            ++this.size;
-            this.internalList.add(entry);
-            return null;
+        this.smallest = this.biggest = this.rootElement = newEntry;
+
+        ++this.size;
+        this.internalList.add(entry);
+        return null;
+
+    }
+
+    private T addNode(T entry, RangeEntry curr) {
+        int comparison = curr.value.compareTo(entry);
+        if (comparison > 0) {
+            return handleLeft(entry, curr);
+        }
+        else if (comparison < 0) {
+            return handleRight(entry, curr);
         }
         else {
-            RangeEntry curr = this.rootElement;
-            RangeEntry prev = null;
-            while (true) {
-                int comparison = curr.value.compareTo(entry);
-                if (comparison == 1) {
-                    prev = curr;
-                    curr = curr.leftChild;
-
-                    if (curr == null) {
-                        return addAsPrevLeft(entry, prev);
-                    }
-                }
-                else if (comparison == -1) {
-                    prev = curr;
-                    curr = curr.rightChild;
-
-                    if (curr == null) {
-                        return addAsPrevRight(entry, prev);
-                    }
-                }
-                else {
-                    return curr.value;
-                }
-
-            }
-
+            return entry;
         }
 
+    }
+
+    private T handleRight(T entry, RangeEntry curr) {
+        if (curr.rightChild != null) {
+            return addNode(entry, curr.rightChild);
+        }
+        else {
+            return addAsPrevRight(entry, curr);
+        }
+    }
+
+    private T handleLeft(T entry, RangeEntry curr) {
+        if (curr.leftChild != null) {
+            return addNode(entry, curr.leftChild);
+        }
+        else {
+            return addAsPrevLeft(entry, curr);
+        }
     }
 
     private T addAsPrevRight(T e, RangeEntry prev) {

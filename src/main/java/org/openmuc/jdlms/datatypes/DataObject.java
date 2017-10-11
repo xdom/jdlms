@@ -606,7 +606,7 @@ public class DataObject {
         }
         else if (resultData.isCosemDateFormat()) {
             CosemDateFormat cosemFormat = resultData.getValue();
-            strBuilder.append(cosemFormat.toCalendar().getTime().toString());
+            strBuilder.append(cosemFormat.toString());
         }
         else if (resultData.isComplex() && resultData.getType() != Type.COMPACT_ARRAY) {
             List<DataObject> complex = resultData.getValue();

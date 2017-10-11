@@ -1,5 +1,5 @@
-/*
- * Copyright 2012-15 Fraunhofer ISE
+/**
+ * Copyright 2012-17 Fraunhofer ISE
  *
  * This file is part of jDLMS.
  * For more information visit http://www.openmuc.org
@@ -16,7 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 package org.openmuc.jdlms.transportlayer.client;
 
@@ -190,6 +189,8 @@ public class Iec21Layer implements TransportLayer {
         try {
             Thread.sleep(settings.baudrateChangeDelay());
         } catch (InterruptedException e) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
 
         // change mode to Z baud, 7,1,E
@@ -247,10 +248,9 @@ public class Iec21Layer implements TransportLayer {
         case '6':
             return 19200;
         default:
-            throw new FatalJDlmsException(ExceptionId.IEC_21_CONNECTION_ESTABLISH_ERROR, SYSTEM,
-                    String.format(
-                            "Syntax error in identification message received: unknown baud rate received. Baud character was 0x%02X or char '%s'.",
-                            (byte) baudCharacter, String.valueOf(baudCharacter)));
+            throw new FatalJDlmsException(ExceptionId.IEC_21_CONNECTION_ESTABLISH_ERROR, SYSTEM, String.format(
+                    "Syntax error in identification message received: unknown baud rate received. Baud character was 0x%02X or char '%s'.",
+                    (byte) baudCharacter, String.valueOf(baudCharacter)));
         }
     }
 

@@ -1,5 +1,5 @@
-/*
- * Copyright 2012-15 Fraunhofer ISE
+/**
+ * Copyright 2012-17 Fraunhofer ISE
  *
  * This file is part of jDLMS.
  * For more information visit http://www.openmuc.org
@@ -16,7 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 package org.openmuc.jdlms.transportlayer.client;
 

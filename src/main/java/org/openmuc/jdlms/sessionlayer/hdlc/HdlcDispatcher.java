@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.sessionlayer.hdlc;
 
 import static org.openmuc.jdlms.JDlmsException.ExceptionId.HDLC_CONNECTION_CLOSE_ERROR;
@@ -22,13 +41,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.openmuc.jdlms.FatalJDlmsException;
-import org.openmuc.jdlms.TcpConnectionBuilder.InetTransportProtocol;
 import org.openmuc.jdlms.RawMessageData;
 import org.openmuc.jdlms.RawMessageData.MessageSource;
 import org.openmuc.jdlms.RawMessageData.RawMessageDataBuilder;
 import org.openmuc.jdlms.RawMessageListener;
-import org.openmuc.jdlms.settings.client.HdlcTcpSettings;
+import org.openmuc.jdlms.TcpConnectionBuilder.InetTransportProtocol;
 import org.openmuc.jdlms.settings.client.HdlcSettings;
+import org.openmuc.jdlms.settings.client.HdlcTcpSettings;
 import org.openmuc.jdlms.settings.client.SerialSettings;
 import org.openmuc.jdlms.settings.client.Settings;
 import org.openmuc.jdlms.transportlayer.client.Iec21Layer;
@@ -218,6 +237,8 @@ public class HdlcDispatcher {
                 receivedFrame = this.incommingQueue.poll(responseTimeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 // ignore, since this should't occur
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
             return receivedFrame;
         }
@@ -360,6 +381,8 @@ public class HdlcDispatcher {
                                 incommingQueue.put(hdlcFrame);
                             } catch (InterruptedException e) {
                                 // ignore this
+                                // Restore interrupted state...
+                                Thread.currentThread().interrupt();
                             }
                         }
                         else {

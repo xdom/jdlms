@@ -24,12 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 /**
  * Class representing a COSEM Date.
  */
-public class CosemDate extends CommonDateFormat {
+public class CosemDate implements CosemDateFormat {
     private static final int NOT_SPECIFIED = 0xff;
 
     static final int LENGTH = 5;
@@ -41,18 +40,6 @@ public class CosemDate extends CommonDateFormat {
     private static final int SECOND_LAST_DAY_OF_MONTH = 0xfd;
 
     private byte[] octetString;
-
-    public CosemDate(long timestamp) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp);
-
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfWeek = 0xFF;
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        init(year, month, dayOfMonth, dayOfWeek);
-
-    }
 
     /**
      * Constructs a COSEM Date.
@@ -107,7 +94,8 @@ public class CosemDate extends CommonDateFormat {
     public CosemDate(int year, int month, int dayOfMonth, int dayOfWeek) throws IllegalArgumentException {
         verifyYear(year);
         verifyMonth(month);
-        veryfyDays(year, month, dayOfMonth, dayOfWeek);
+        verifyDayOfWeek(dayOfWeek);
+        verifyDayOfMonth(dayOfMonth);
 
         init(year, month, dayOfMonth, dayOfWeek);
     }
@@ -140,35 +128,6 @@ public class CosemDate extends CommonDateFormat {
             throw new IllegalArgumentException("Wrong size.");
         }
         return new CosemDate(octetString);
-    }
-
-    private void veryfyDays(int year, int month, int dayOfMonth, int dayOfWeek) {
-        verifyDayOfMonth(dayOfMonth);
-        verifyDayOfWeek(dayOfWeek);
-
-        if (dayOfMonth == LAST_DAY_OF_MONTH || dayOfMonth == NOT_SPECIFIED || dayOfWeek == NOT_SPECIFIED) {
-            return;
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1);
-
-        if (dayOfMonth == SECOND_LAST_DAY_OF_MONTH) {
-            calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth(calendar) - 1);
-        }
-        else {
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        }
-
-        int dayOfWeekBasedOnVar = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (dayOfWeekBasedOnVar == 0) {
-            dayOfWeekBasedOnVar = 7;
-        }
-
-        if (dayOfWeekBasedOnVar != dayOfWeek) {
-            throw new IllegalArgumentException("Day of week and day of month are provided, but don't match.");
-        }
     }
 
     private static void verifyYear(int year) {
@@ -207,15 +166,6 @@ public class CosemDate extends CommonDateFormat {
     @Override
     public byte[] encode() {
         return Arrays.copyOf(this.octetString, length());
-    }
-
-    @Override
-    public Calendar toCalendar() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-
-        initCalendar(calendar);
-
-        return calendar;
     }
 
     void initCalendar(Calendar calendar) {
