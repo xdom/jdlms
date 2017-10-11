@@ -138,7 +138,8 @@ public class GcmModule {
             return data;
         }
 
-        return (byte) (data | (1 << index));
+        byte val = (byte) ((1 << index) & 0xff);
+        return (byte) (data | val);
     }
 
     /**

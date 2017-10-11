@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.internal.association.sn;
 
 import static org.openmuc.jdlms.datatypes.DataObject.newNullData;
@@ -167,11 +186,11 @@ public class ReadRequestProcessor extends SnRequestProcessorBase {
         }
 
         switch (access.getAccessType()) {
+        case METHOD:
+            return methodAction(access, intersectingRange, parameterizedAccess);
         case ATTRIBUTE:
         default:
             return variableGet(access, intersectingRange, parameterizedAccess);
-        case METHOD:
-            return methodAction(access, intersectingRange, parameterizedAccess);
         }
 
     }
@@ -191,8 +210,8 @@ public class ReadRequestProcessor extends SnRequestProcessorBase {
         case ATTRIBUTE:
             return variableGet(access, intersectingRange, null);
 
-        default:
         case METHOD:
+        default:
             // should not occur..
             throw new IOException();
         }
@@ -255,7 +274,12 @@ public class ReadRequestProcessor extends SnRequestProcessorBase {
         int memberId = access.getMemberId();
 
         if (access.getAccessType() == AccessType.METHOD) {
-            return (T) new MethodParameter(classId, instanceId, memberId, selAccessDesc.getAccessParameter());
+            DataObject param = null;
+            if (selAccessDesc != null) {
+                param = selAccessDesc.getAccessParameter();
+            }
+
+            return (T) new MethodParameter(classId, instanceId, memberId, param);
         }
         else {
             return (T) new AttributeAddress(classId, instanceId, memberId, selAccessDesc);
@@ -267,12 +291,11 @@ public class ReadRequestProcessor extends SnRequestProcessorBase {
         if (parameterizedAccess == null) {
             return null;
         }
-        else {
-            DataObject parameter = convertDataToDataObject(parameterizedAccess.parameter);
-            int selector = (int) (parameterizedAccess.selector.getValue() & 0xff);
 
-            return new SelectiveAccessDescription(selector, parameter);
-        }
+        DataObject parameter = convertDataToDataObject(parameterizedAccess.parameter);
+        int selector = (int) (parameterizedAccess.selector.getValue() & 0xff);
+
+        return new SelectiveAccessDescription(selector, parameter);
     }
 
 }

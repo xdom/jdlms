@@ -1,23 +1,21 @@
-/*
- * Copyright Fraunhofer ISE, 2012
- * Author(s): Karsten Mueller-Bier
- * 
- * This file is part of jASN1.
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
  * For more information visit http://www.openmuc.org
- * 
- * jASN1 is free software: you can redistribute it and/or modify
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * jASN1 is distributed in the hope that it will be useful,
+ *
+ * jDLMS is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with jASN1.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.openmuc.jdlms.internal.asn1.axdr.types;
 
@@ -156,8 +154,10 @@ public class AxdrInteger implements AxdrType {
         }
         else {
             for (int i = 1; i <= 8; i++) {
-                long lowerBound = (long) (Math.pow(2, (i * 8) - 1) * (-1));
-                long upperBound = (long) (Math.pow(2, (i * 8) - 1) - 1);
+                long bound = (long) Math.pow(2d, (i * 8d) - 1d);
+
+                long lowerBound = bound * -1;
+                long upperBound = bound - 1l;
                 if (lowerBound <= val && upperBound >= val) {
                     return i;
                 }

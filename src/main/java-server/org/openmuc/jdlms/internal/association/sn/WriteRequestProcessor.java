@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.internal.association.sn;
 
 import static org.openmuc.jdlms.internal.DlmsEnumFunctions.enumToAxdrEnum;
@@ -12,12 +31,13 @@ import org.openmuc.jdlms.IllegalMethodAccessException;
 import org.openmuc.jdlms.MethodParameter;
 import org.openmuc.jdlms.ObisCode;
 import org.openmuc.jdlms.SetParameter;
+import org.openmuc.jdlms.datatypes.DataObject;
 import org.openmuc.jdlms.internal.APdu;
 import org.openmuc.jdlms.internal.BaseNameRange;
 import org.openmuc.jdlms.internal.BaseNameRange.Access;
 import org.openmuc.jdlms.internal.DataConverter;
-import org.openmuc.jdlms.internal.DlmsEnumFunctions;
 import org.openmuc.jdlms.internal.DataDirectoryImpl.CosemClassInstance;
+import org.openmuc.jdlms.internal.DlmsEnumFunctions;
 import org.openmuc.jdlms.internal.asn1.axdr.types.AxdrNull;
 import org.openmuc.jdlms.internal.asn1.cosem.COSEMpdu;
 import org.openmuc.jdlms.internal.asn1.cosem.Data;
@@ -96,21 +116,28 @@ public class WriteRequestProcessor extends SnRequestProcessorBase {
         int memberId = access.getMemberId();
 
         switch (access.getAccessType()) {
-        default:
-        case ATTRIBUTE:
-            return variableSet(classId, instanceId, memberId, data);
-
         case METHOD:
             return methodAction(memberId, classId, instanceId, data);
+
+        case ATTRIBUTE:
+        default:
+            return variableSet(classId, instanceId, memberId, data);
 
         }
     }
 
     private SubChoice methodAction(int memberId, int classId, ObisCode instanceId, Data data) {
-        MethodParameter methodParameter = new MethodParameter(classId, instanceId, memberId);
+        DataObject dataObject;
+        if (data != null) {
+            dataObject = DataConverter.convertDataToDataObject(data);
+        }
+        else {
+            dataObject = DataObject.newNullData();
+        }
+
+        MethodParameter methodParameter = new MethodParameter(classId, instanceId, memberId, dataObject);
 
         SubChoice res = new SubChoice();
-
         try {
 
             this.requestProcessorData.directory.invokeMethod(logicalDeviceId(), methodParameter, connectionId());

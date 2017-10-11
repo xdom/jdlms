@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms.datatypes;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -10,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openmuc.jdlms.datatypes.CosemDateFormat.Field;
-import org.openmuc.jdlms.datatypes.CosemDateTime.ClockStatus;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -30,16 +48,6 @@ public class CosemDateTimeTest {
         int deviation = cosemDateTime.get(Field.DEVIATION);
 
         assertEquals(5 * 60, deviation);
-    }
-
-    @Test
-    public void testSymmetry() throws Exception {
-        CosemDateTime cosemDateTime = buildSampleDatetime();
-
-        CosemDateTime cosemDateTime2 = CosemDateTime.decode(cosemDateTime.encode());
-
-        assertEquals(cosemDateTime.toCalendar().get(Calendar.ZONE_OFFSET),
-                cosemDateTime2.toCalendar().get(Calendar.ZONE_OFFSET));
     }
 
     @Test
@@ -98,33 +106,6 @@ public class CosemDateTimeTest {
         new CosemDate(year, month, day);
     }
 
-    @Test
-    public void testTime1() throws Exception {
-        final int hour = 17;
-        final int minute = 59;
-        final int second = 7;
-        CosemTime cosemTime = new CosemTime(hour, minute, second);
-        Calendar cal = cosemTime.toCalendar();
-
-        assertEquals(hour, cal.get(Calendar.HOUR_OF_DAY));
-        assertEquals(minute, cal.get(Calendar.MINUTE));
-
-        assertEquals(second, cosemTime.get(Field.SECOND));
-        assertEquals(second, cal.get(Calendar.SECOND));
-    }
-
-    @Test
-    public void testDate1() throws Exception {
-        final int year = 2016;
-        final int month = 7;
-        final int dayOfMonth = 9;
-        Calendar cal = new CosemDate(year, month, dayOfMonth).toCalendar();
-
-        assertEquals(year, cal.get(Calendar.YEAR));
-        assertEquals(month - 1, cal.get(Calendar.MONTH));
-        assertEquals(dayOfMonth, cal.get(Calendar.DAY_OF_MONTH));
-    }
-
     private CosemDateTime buildSampleDatetime() {
         CosemDate cosemDate = new CosemDate(2016, 6, 21);
         CosemTime cosemTime = new CosemTime(12, 46, 19, 20);
@@ -157,19 +138,6 @@ public class CosemDateTimeTest {
         assertEquals(4, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(0, cal.get(Calendar.ZONE_OFFSET));
         assertEquals(0, cal.get(Calendar.DST_OFFSET));
-    }
-
-    @Test
-    public void testToCalendar() throws Exception {
-        int deviation = 60 * 2;
-        CosemDateTime cosemDateTime = new CosemDateTime(2017, 3, 30, 11, 49, 41, deviation,
-                ClockStatus.DAYLIGHT_SAVING_ACTIVE);
-
-        Calendar calendar = cosemDateTime.toCalendar();
-
-        assertEquals(11, calendar.get(Calendar.HOUR_OF_DAY));
-        assertEquals(11, calendar.get(Calendar.HOUR));
-        assertEquals(TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS), calendar.get(Calendar.ZONE_OFFSET));
     }
 
 }

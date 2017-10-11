@@ -1,3 +1,14 @@
+v1.5.0 05-Oct-2017
+------------------
+- CosemDataFormat: 
+	* remove toCalendar method - bijective mappiung not possible with recuring COSEM dates
+	* remove timestamp constructors
+	* fix incorrect CosemDate check
+- fix NPE in ResponseQueue#putError(IOException)
+- fix encoding of float32 and float64
+- update bouncycastle bcprov-jdk15on to 1.58
+- update jasn1 to 1.8.2
+
 v1.4.1 26-Jul-2017
 ------------------
 - update bouncycastle bcprov-jdk15on to 1.57

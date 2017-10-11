@@ -12,10 +12,18 @@ buildscript {
 
 plugins {
   id "org.asciidoctor.convert" version "1.5.3"
+  id "com.github.hierynomus.license" version "0.14.0"
+  id "net.saliman.cobertura" version "2.2.8"
 }
 
 apply plugin: "org.asciidoctor.convert"
 apply from: "configuration.gradle"
+
+license { 
+  header = file("license/LICENSE_HEADER.txt")
+  strictCheck false
+  include "*.java"
+}
 
 asciidoctor {
   backends = ["pdf", "html5"]
@@ -45,6 +53,7 @@ configure(javaProjects) {
   apply plugin: "maven"
   apply plugin: "signing"
   apply plugin: "biz.aQute.bnd.builder"
+  apply plugin: 'net.saliman.cobertura'
 
   uploadArchives.enabled = false
   
@@ -80,6 +89,21 @@ configure(javaProjects) {
     manifest {
       version = project.version.replace("-",".");
     }
+  }
+  cobertura {
+  
+    dependencies {
+      testCompile 'org.slf4j:slf4j-simple:1.6.1'
+    }
+ 	coverageFormats = ['html', 'xml']				
+  	coverageIgnoreTrivial = false					
+  	coverageIgnores = ['org.slf4j.Logger.*']
+  	coverageExcludes = ['.*\\.app\\..*', '.*\\.cli\\..*']	
+   	coverageReportDir = new File("$buildDir/reports/cobertura")
+   	coverageTestTasks {
+      project.tasks.withType(Test).matching {it.name == 'test'}
+    }
+ 	  
   }
 
   task jarAll(type: Copy) {

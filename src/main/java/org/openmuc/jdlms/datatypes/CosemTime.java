@@ -26,12 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 /**
  * Class representing a COSEM Time.
  */
-public class CosemTime extends CommonDateFormat {
+public class CosemTime implements CosemDateFormat {
 
     static final int LENGTH = 4;
 
@@ -86,17 +85,6 @@ public class CosemTime extends CommonDateFormat {
         this.octetString[3] = (byte) (hundredths & 0xff);
     }
 
-    public CosemTime(long timeStamp) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeStamp);
-
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        int second = calendar.get(Calendar.SECOND);
-        int hundredths = calendar.get(Calendar.MILLISECOND) / 10;
-        init(hour, minute, second, hundredths);
-    }
-
     private CosemTime(byte[] octetString) {
         this.octetString = octetString;
     }
@@ -124,14 +112,6 @@ public class CosemTime extends CommonDateFormat {
     @Override
     public byte[] encode() {
         return Arrays.copyOf(this.octetString, length());
-    }
-
-    @Override
-    public Calendar toCalendar() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-        initCalendar(calendar);
-
-        return calendar;
     }
 
     void initCalendar(Calendar calendar) {

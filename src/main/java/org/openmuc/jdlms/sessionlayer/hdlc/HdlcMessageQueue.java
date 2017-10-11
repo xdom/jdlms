@@ -69,6 +69,8 @@ public class HdlcMessageQueue implements Iterable<byte[]> {
                 // TODO fatal..
             }
         } catch (InterruptedException e) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
     }
 

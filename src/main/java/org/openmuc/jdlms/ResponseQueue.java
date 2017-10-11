@@ -25,10 +25,13 @@ import org.openmuc.jdlms.internal.asn1.cosem.COSEMpdu;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.BlockingQueue;
+
+import org.openmuc.jdlms.internal.asn1.cosem.COSEMpdu;
 
 class ResponseQueue {
 
-    private final ArrayBlockingQueue<COSEMpdu> queue = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<COSEMpdu> queue = new ArrayBlockingQueue<>(1);
     private final int timeout;
     private volatile boolean polled;
     private IOException lastError;
@@ -46,6 +49,8 @@ class ResponseQueue {
             this.queue.put(data);
         } catch (InterruptedException e) {
             // should not occur
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -67,6 +72,8 @@ class ResponseQueue {
             }
             return cosemPdu;
         } catch (InterruptedException e) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
             throw new IOException("Interrupted while waiting for incoming response");
         } finally {
             this.polled = false;

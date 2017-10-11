@@ -419,6 +419,8 @@ public abstract class DlmsConnection implements AutoCloseable {
                 }
             } catch (InterruptedException e) {
                 // ignore, shouldn't occur
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
 
         } finally {
@@ -756,6 +758,9 @@ public abstract class DlmsConnection implements AutoCloseable {
                 return incomingApduQeue.poll(settings.responseTimeout(), TimeUnit.MILLISECONDS);
             }
         } catch (InterruptedException e) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+
             throw new IllegalStateException(e);
         }
     }

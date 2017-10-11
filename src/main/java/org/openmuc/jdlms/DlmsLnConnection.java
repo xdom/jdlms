@@ -432,7 +432,8 @@ class DlmsLnConnection extends DlmsConnection {
         }
         else {
             // send fragments - implements this
-            return null;
+            // TODO
+            throw new IOException("recieving fragments not yet implemented..");
         }
 
     }
@@ -496,7 +497,8 @@ class DlmsLnConnection extends DlmsConnection {
         }
         else {
             // send fragments
-            return null;
+            // TODO
+            throw new IOException("this is not yet implemented..");
         }
     }
 

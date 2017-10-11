@@ -1,3 +1,22 @@
+/**
+ * Copyright 2012-17 Fraunhofer ISE
+ *
+ * This file is part of jDLMS.
+ * For more information visit http://www.openmuc.org
+ *
+ * jDLMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * jDLMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with jDLMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openmuc.jdlms;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -51,13 +70,13 @@ import org.openmuc.jdlms.transportlayer.server.ServerTransportLayer;
  *            the concrete server builder.
  */
 public abstract class ServerBuilder<T extends ServerBuilder<T>> {
-    protected static abstract class ServerSettingsImpl implements ServerSettings {
+    protected abstract static class ServerSettingsImpl implements ServerSettings {
 
-        public int inactivityTimeout;
-        public int responseTimeout;
-        public int maxClients;
-        public ServerConnectionListener connectionListener;
-        public ReferencingMethod referencingMethod;
+        private int inactivityTimeout;
+        private int responseTimeout;
+        private int maxClients;
+        private ServerConnectionListener connectionListener;
+        private ReferencingMethod referencingMethod;
 
         @Override
         public int getInactivityTimeout() {
@@ -633,7 +652,9 @@ public abstract class ServerBuilder<T extends ServerBuilder<T>> {
         Method setMethod = null;
         Method getMethod = null;
 
-        boolean getAccess = false, setAccess = false;
+        boolean getAccess = false;
+        boolean setAccess = false;
+
         switch (cosemAttribute.accessMode()) {
         case AUTHENTICATED_READ_AND_WRITE:
         case READ_AND_WRITE:
@@ -681,16 +702,21 @@ public abstract class ServerBuilder<T extends ServerBuilder<T>> {
             verifyDeclaredExceptions(klass, method);
 
             if (getMethod != null && setMethod != null) {
-                break;
+                return finBuild(klass, field, cosemAttribute, accessSelectors, setMethod, getMethod);
             }
             if (getMethod != null && !setAccess) {
-                break;
+                return finBuild(klass, field, cosemAttribute, accessSelectors, setMethod, getMethod);
             }
             if (setMethod != null && !getAccess) {
-                break;
+                return finBuild(klass, field, cosemAttribute, accessSelectors, setMethod, getMethod);
             }
         }
 
+        return finBuild(klass, field, cosemAttribute, accessSelectors, setMethod, getMethod);
+    }
+
+    private static AttributeAccessor finBuild(Class<?> klass, Field field, CosemAttribute cosemAttribute,
+            Set<Integer> accessSelectors, Method setMethod, Method getMethod) throws IllegalPametrizationError {
         if (!accessSelectors.isEmpty()) {
             checkIfSelAccessParamExists(klass, field, cosemAttribute, setMethod, getMethod);
         }
@@ -708,7 +734,6 @@ public abstract class ServerBuilder<T extends ServerBuilder<T>> {
         else {
             return new AttributeAccessor.FieldSetMethodGetAccessor(field, getMethod, cosemAttribute, accessSelectors);
         }
-
     }
 
     private static void checkIfSelAccessParamExists(Class<?> klass, Field field, CosemAttribute cosemAttribute,
