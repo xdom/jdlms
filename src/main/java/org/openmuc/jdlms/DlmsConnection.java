@@ -407,20 +407,14 @@ public abstract class DlmsConnection implements AutoCloseable {
             int offset = buffer.length - length;
             this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
 
-            try {
-                APdu aPdu = this.incomingApduQeue.take();
-                if (aPdu == null) {
-                    throw new ResponseTimeoutException("Disconnect timed out.");
-                }
+            APdu aPdu = waitForServerResponseAPdu();
+            if (aPdu == null) {
+                throw new ResponseTimeoutException("Disconnect timed out.");
+            }
 
-                if (aPdu == null || aPdu.getAcseAPdu() == null) {
-                    throw new FatalJDlmsException(ExceptionId.CONNECTION_DISCONNECT_ERROR, Fault.SYSTEM,
-                            "Server did not answer on disconnect");
-                }
-            } catch (InterruptedException e) {
-                // ignore, shouldn't occur
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
+            if (aPdu.getAcseAPdu() == null) {
+                throw new FatalJDlmsException(ExceptionId.CONNECTION_DISCONNECT_ERROR, Fault.SYSTEM,
+                        "Server did not answer on disconnect");
             }
 
         } finally {
