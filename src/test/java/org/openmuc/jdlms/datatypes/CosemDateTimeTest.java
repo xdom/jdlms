@@ -140,4 +140,11 @@ public class CosemDateTimeTest {
         assertEquals(0, cal.get(Calendar.DST_OFFSET));
     }
 
+    @Test
+    public void testNotSpecifiedDeviation() throws Exception {
+        CosemDate cosemDate = new CosemDate(2016, 6, 21);
+        CosemTime cosemTime = new CosemTime(12, 46, 19, 20);
+        CosemDateTime cosemDateTime = new CosemDateTime(cosemDate, cosemTime);
+        assertEquals(0, cosemDateTime.get(Field.DEVIATION));
+    }
 }

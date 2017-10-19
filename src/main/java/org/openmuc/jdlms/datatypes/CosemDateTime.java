@@ -288,7 +288,7 @@ public class CosemDateTime implements CosemDateFormat {
         case DEVIATION:
             short deviation = (short) ((this.subOctetString[0] & 0xff) << 8);
             deviation |= this.subOctetString[1] & 0xff;
-            return deviation;
+            return deviation == (short) DEVIATION_NOT_SPECIFIED ? 0 : deviation;
 
         case CLOCK_STATUS:
             return this.subOctetString[2];
