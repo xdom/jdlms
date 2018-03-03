@@ -405,9 +405,13 @@ public abstract class DlmsConnection implements AutoCloseable {
             this.incomingApduQeue.clear();
 
             int offset = buffer.length - length;
-            this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
 
-            APdu aPdu = waitForServerResponseAPdu();
+            APdu aPdu;
+            int retries = 0;
+            do {
+                this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
+            } while ((aPdu = waitForServerResponseAPdu()) == null && retries++ < 3);
+
             if (aPdu == null) {
                 throw new ResponseTimeoutException("Disconnect timed out.");
             }
@@ -503,16 +507,19 @@ public abstract class DlmsConnection implements AutoCloseable {
 
         RawMessageDataBuilder rawMessageBuilder = newRawMessageDataBuilder();
 
-        try {
-            int length = encodeAPdu(aarqAPdu, rawMessageBuilder);
-            this.sessionLayer.send(buffer, buffer.length - length, length, rawMessageBuilder);
-        } catch (IOException e) {
-            closeUnsafe();
+        APdu responseAPdu;
+        int retries = 0;
+        do {
+            try {
+                int length = encodeAPdu(aarqAPdu, rawMessageBuilder);
+                this.sessionLayer.send(buffer, buffer.length - length, length, rawMessageBuilder);
+            } catch (IOException e) {
+                closeUnsafe();
+                throw e;
+            }
+        } while ((responseAPdu = waitForServerResponseAPdu()) == null && retries++ < 3);
 
-            throw e;
-        }
-
-        processInitResponse(hlsSecretProcessor, clientToServerChallenge, waitForServerResponseAPdu());
+        processInitResponse(hlsSecretProcessor, clientToServerChallenge, responseAPdu);
     }
 
     Settings connectionSettings() {
@@ -564,9 +571,13 @@ public abstract class DlmsConnection implements AutoCloseable {
         int length = encodeAPdu(aPdu, rawMessageBuilder);
 
         int offset = buffer.length - length;
-        this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
 
-        COSEMpdu responsePdu = this.cosemResponseQ.poll();
+        COSEMpdu responsePdu;
+        int retries = 0;
+        do {
+            this.sessionLayer.send(buffer, offset, length, rawMessageBuilder);
+        } while ((responsePdu = this.cosemResponseQ.poll()) == null && retries++ < 3);
+
         if (responsePdu == null) {
             throw new ResponseTimeoutException("Waiting for response timed out.");
         }
