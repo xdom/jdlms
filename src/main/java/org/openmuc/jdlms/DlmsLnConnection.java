@@ -340,7 +340,8 @@ class DlmsLnConnection extends DlmsConnection {
         if (!negotiatedFeatures().contains(ATTRIBUTE0_SUPPORTED_WITH_GET)) {
             checkAttributeIdValidty(params);
         }
-        if (!negotiatedFeatures().contains(ConformanceSetting.SELECTIVE_ACCESS)) {
+        if (!connectionSettings().selectiveAccessValidationDisabled()
+                && !negotiatedFeatures().contains(ConformanceSetting.SELECTIVE_ACCESS)) {
             for (AttributeAddress param : params) {
                 if (param.getAccessSelection() != null) {
                     throw new IllegalArgumentException("Selective Access not supported on this connection");

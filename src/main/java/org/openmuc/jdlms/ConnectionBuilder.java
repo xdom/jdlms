@@ -65,6 +65,8 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
 
     private int hdlcMaxInformationLength;
 
+    private boolean selectiveAccessValidationDisabled;
+
     /**
      * Create a new connection builder, with default settings.
      */
@@ -87,6 +89,8 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
         this.rawMessageListener = null;
 
         this.hdlcMaxInformationLength = HdlcParameters.MAX_INFORMATION_LENGTH;
+
+        this.selectiveAccessValidationDisabled = false;
     }
 
     /**
@@ -296,6 +300,19 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
     }
 
     /**
+     * Set a flag to disable validation of selective access feature
+     * when building a Get PDU inside a connection.
+     *
+     * @param disable
+     *            true when the validation should be disabled
+     * @return the builder.
+     */
+    public T setSelectiveAccessValidationDisabled(boolean disable) {
+        this.selectiveAccessValidationDisabled = disable;
+        return self();
+    }
+
+    /**
      * Builds a new DLMS/COSEM Connection.
      * 
      * <p>
@@ -365,6 +382,7 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
         private final ReferencingMethod referencingMethod;
         private final RawMessageListener rawMessageListener;
         private final int hdlcMaxInformationLength;
+        private final boolean selectiveAccessValidationDisabled;
 
         public SettingsImpl(ConnectionBuilder<?> builder) {
             this.systemTitle = builder.systemTitle;
@@ -377,6 +395,7 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
             this.referencingMethod = builder.referencingMethod;
             this.rawMessageListener = builder.rawMessageListener;
             this.hdlcMaxInformationLength = builder.hdlcMaxInformationLength;
+            this.selectiveAccessValidationDisabled = builder.selectiveAccessValidationDisabled;
         }
 
         @Override
@@ -445,5 +464,9 @@ public abstract class ConnectionBuilder<T extends ConnectionBuilder<T>> {
             return this.hdlcMaxInformationLength;
         }
 
+        @Override
+        public boolean selectiveAccessValidationDisabled() {
+            return this.selectiveAccessValidationDisabled;
+        }
     }
 }

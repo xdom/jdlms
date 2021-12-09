@@ -48,4 +48,6 @@ public interface Settings {
     RawMessageListener rawMessageListener();
 
     int hdlcMaxInformationLength();
+
+    boolean selectiveAccessValidationDisabled();
 }
