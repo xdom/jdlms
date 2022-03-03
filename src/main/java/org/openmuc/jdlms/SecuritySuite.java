@@ -166,8 +166,8 @@ public class SecuritySuite {
          * Set the authentication level, a client authenticates to a server.
          * 
          * <p>
-         * <b>NOTE:</b> only {@linkplain AuthenticationMechanism#NONE}, {@linkplain AuthenticationMechanism#LOW} and
-         * {@linkplain AuthenticationMechanism#HLS5_GMAC} are supported at the moment. <br>
+         * <b>NOTE:</b> only {@linkplain AuthenticationMechanism#ABSENT}, {@linkplain AuthenticationMechanism#NONE},<br>
+         * {@linkplain AuthenticationMechanism#LOW} and {@linkplain AuthenticationMechanism#HLS5_GMAC} are supported at the moment. <br>
          * If {@linkplain AuthenticationMechanism#LOW} is set, the password must be set.<br>
          * If {@linkplain AuthenticationMechanism#HLS5_GMAC} is set, the authentication key and the encryption key must
          * be set.

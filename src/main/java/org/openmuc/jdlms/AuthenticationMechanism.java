@@ -27,6 +27,10 @@ import java.util.Map;
  * Mechanisms to authenticate to the remote meter.
  */
 public enum AuthenticationMechanism {
+    /**
+     * No authentication used (no mechanism presented in AARQ message).
+     */
+    ABSENT(-1),
 
     /**
      * No authentication used.

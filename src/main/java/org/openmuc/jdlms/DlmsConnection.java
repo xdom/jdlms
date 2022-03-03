@@ -469,7 +469,9 @@ public abstract class DlmsConnection implements AutoCloseable {
         SecuritySuite securitySuite = settings.securitySuite();
 
         ApplicationContextName applicationContextName = applicationContextNameFrom(contextId);
-        MechanismName mechanismName = mechanismNameFrom(settings.securitySuite().getAuthenticationMechanism());
+        MechanismName mechanismName = settings.securitySuite().getAuthenticationMechanism() == AuthenticationMechanism.ABSENT
+                ? null
+                : mechanismNameFrom(settings.securitySuite().getAuthenticationMechanism());
 
         AARQApdu aarq = new AARQApdu();
         aarq.setApplicationContextName(applicationContextName);
@@ -480,6 +482,7 @@ public abstract class DlmsConnection implements AutoCloseable {
         case LOW:
             setupAarqAuthentication(aarq, securitySuite.getPassword());
         case NONE:
+        case ABSENT:
             break;
 
         case HLS5_GMAC:

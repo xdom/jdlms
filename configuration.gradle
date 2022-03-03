@@ -1,7 +1,7 @@
 
 project.ext {
 
-  cfgVersion = "1.5.4"
+  cfgVersion = "1.7.0"
   
   cfgGroup = "org.openmuc"
 

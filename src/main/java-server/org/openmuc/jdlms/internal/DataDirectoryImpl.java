@@ -212,7 +212,8 @@ public class DataDirectoryImpl implements DataDirectory {
         case AUTHENTICATED_READ_ONLY:
         case AUTHENTICATED_READ_AND_WRITE:
             SecuritySuite securitySuite = connectionData.securitySuite;
-            if (securitySuite.getAuthenticationMechanism() == AuthenticationMechanism.NONE) {
+            if (securitySuite.getAuthenticationMechanism() == AuthenticationMechanism.NONE
+                    || securitySuite.getAuthenticationMechanism() == AuthenticationMechanism.ABSENT) {
                 throw new IllegalAttributeAccessException(AccessResultCode.READ_WRITE_DENIED);
             }
             break;
